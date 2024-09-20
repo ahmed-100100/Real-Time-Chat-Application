@@ -1,42 +1,64 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --btncolor: #436dd9;
 }
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+body {
+  background-color: #e4e3ff;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+form {
+  background-color: white;
+  border-radius: 13px;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+label {
+  color: #686868;
+  font-size: 16px;
+  font-weight: 600;
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #686868;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.rows {
+  height: 100vh;
 }
-
-.card {
-  padding: 2em;
+.LoginBtn {
+  color: white;
+  background-color: var(--btncolor);
+  font-size: 18px;
+  font-weight: 600;
 }
-
-.read-the-docs {
-  color: #888;
+div a {
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--btncolor);
+  cursor: pointer;
+}
+.BTnIcon button {
+  font-size: 24px;
+  font-weight: 600;
+  color: #545454;
+  background-color: #d9d9d9;
+}
+.bdr {
+  border-top: solid 1px #d2d2d2;
+  width: 100%;
+}
+div p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #a3a3a3;
+}
+.NavSide {
+  background-color: var(--btncolor);
+}
+.NavSideIc {
+  text-decoration: none;
+  font-size: 27px;
+  color: #f8f8f8;
+}
+.Door {
+  text-decoration: none;
+  font-size: 27px;
+  color: #e4a051;
 }
