@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Login() {
   return (
-    <div className="row justify-content-center align-items-center rows">
+    <div className="row justify-content-center align-items-center rows mx-3 my-2">
       <div className="form col-md-6 col-sm-12 ">
         <div className="form-group p-4 w-100  g-2">
           <p className="title">Login</p>
@@ -31,15 +32,19 @@ export default function Login() {
           <div className="w-100 text-center">
             <p>OR lOGIN WITH</p>
           </div>
-          <div className="BTnIcon d-flex justify-content-between">
-            <button className="form-control p-1 me-5">
-              <FontAwesomeIcon icon={faGoogle} className="pe-2" />
-              <span>Google</span>
-            </button>
-            <button className="form-control p-2s ms-5">
-              <FontAwesomeIcon icon={faFacebook} className="pe-2" />
-              <span>Facebook</span>
-            </button>
+          <div className="row justify-content-between g-2">
+            <div className="col-md-5 col-sm-12 BTnIcon">
+              <button className="form-control p-3">
+                <FontAwesomeIcon icon={faGoogle} className="pe-2" />
+                <span>Google</span>
+              </button>
+            </div>
+            <div className="col-md-5 col-sm-12 BTnIcon">
+              <button className="form-control p-3">
+                <FontAwesomeIcon icon={faFacebook} className="pe-2" />
+                <span>Facebook</span>
+              </button>
+            </div>
           </div>
         </div>
         <div className="OutForm text-center mt-2">

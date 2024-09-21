@@ -5,7 +5,7 @@ export default function Register() {
     <div className="container">
       <div className="row justify-content-center align-items-center rows">
         <div className="col-md-8 col-sm-10">
-          <form className="row justify-content-center align-items-center p-3">
+          <div className="form row justify-content-center align-items-center p-3 my-3 mx-2">
             <div className="col-md-6 col-sm-12 p-3">
               <label htmlFor="LoginEmail">Your Name</label>
               <input
@@ -49,7 +49,10 @@ export default function Register() {
                 value=""
                 id="flexCheckDefault"
               ></input>
-              <label className="form-check-label ps-2" htmlFor="flexCheckDefault">
+              <label
+                className="form-check-label ps-2"
+                htmlFor="flexCheckDefault"
+              >
                 I agree with <a>Privacy policy & terms</a>
               </label>
             </div>
@@ -64,21 +67,23 @@ export default function Register() {
             <div className="w-100 text-center">
               <p>OR SIGNUP WITH</p>
             </div>
-            <div className="col-md-6 col-sm-12 p-3">
-              <div className="BTnIcon d-flex justify-content-between">
-                <button className="form-control p-1 me-2">
+            <div className="row justify-content-between g-2">
+              <div className="col-md-5 col-sm-12 BTnIcon">
+                <button className="form-control p-3">
                   <FontAwesomeIcon icon={faGoogle} className="pe-2" />
                   <span>Google</span>
                 </button>
-                <button className="form-control p-2 ms-2">
+              </div>
+              <div className="col-md-5 col-sm-12 BTnIcon">
+                <button className="form-control p-3">
                   <FontAwesomeIcon icon={faFacebook} className="pe-2" />
                   <span>Facebook</span>
                 </button>
               </div>
             </div>
-          </form>
-          <div className="OutForm text-center mt-2">
-            Don&apos;t have an account? <a>Register</a>
+            <div className="OutForm text-center mt-2">
+              Don&apos;t have an account? <a>Register</a>
+            </div>
           </div>
         </div>
       </div>
