@@ -4,9 +4,10 @@
 body {
   background-color: #e4e3ff;
 }
-form {
+.form {
   background-color: white;
   border-radius: 13px;
+  padding: 1rem;
 }
 label {
   color: #686868;

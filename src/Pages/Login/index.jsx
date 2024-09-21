@@ -1,14 +1,13 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 export default function Login() {
   return (
     <div className="row justify-content-center align-items-center rows">
-      <div className="col-md-6 col-sm-12 ">
-        <form className="form-group p-4 w-100  g-2">
+      <div className="form col-md-6 col-sm-12 ">
+        <div className="form-group p-4 w-100  g-2">
           <p className="title">Login</p>
-          <label for="LoginEmail">Email Address</label>
+          <label htmlFor="LoginEmail">Email Address</label>
           <input
             placeholder="youremail@example.com"
             type="email"
@@ -16,7 +15,7 @@ export default function Login() {
             id="LoginEmail"
           ></input>
           <div className="mt-3 d-flex justify-content-between">
-            <label for="LoginPass">Password</label>
+            <label htmlFor="LoginPass">Password</label>
             <a className="lin">Forget ?</a>
           </div>
           <input
@@ -25,11 +24,9 @@ export default function Login() {
             className=" form-control p-3"
             id="LoginPass"
           ></input>
-          <input
-            type="submit"
-            value="Account Login"
-            className="LoginBtn form-control p-3"
-          ></input>
+          <button type="button" className="LoginBtn form-control p-3">
+            Account Login
+          </button>
           <div className="bdr my-3 text-center"></div>
           <div className="w-100 text-center">
             <p>OR lOGIN WITH</p>
@@ -44,9 +41,9 @@ export default function Login() {
               <span>Facebook</span>
             </button>
           </div>
-        </form>
+        </div>
         <div className="OutForm text-center mt-2">
-          Don't have an account? <a>Register</a>
+          Don&apos;t have an account? <a>Register</a>
         </div>
       </div>
     </div>

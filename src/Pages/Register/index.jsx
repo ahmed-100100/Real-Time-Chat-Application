@@ -1,4 +1,3 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 export default function Register() {
@@ -8,7 +7,7 @@ export default function Register() {
         <div className="col-md-8 col-sm-10">
           <form className="row justify-content-center align-items-center p-3">
             <div className="col-md-6 col-sm-12 p-3">
-              <label for="LoginEmail">Your Name</label>
+              <label htmlFor="LoginEmail">Your Name</label>
               <input
                 placeholder="yourname"
                 type="text"
@@ -17,7 +16,7 @@ export default function Register() {
               ></input>
             </div>
             <div className="col-md-6 col-sm-12 p-3">
-              <label for="LoginEmail">Email Address</label>
+              <label htmlFor="LoginEmail">Email Address</label>
               <input
                 placeholder="youremail@example.com"
                 type="email"
@@ -26,7 +25,7 @@ export default function Register() {
               ></input>
             </div>
             <div className="col-md-6 col-sm-12 p-3">
-              <label for="LoginPass">Password</label>
+              <label htmlFor="LoginPass">Password</label>
               <input
                 placeholder="password"
                 type="password"
@@ -35,7 +34,7 @@ export default function Register() {
               ></input>
             </div>
             <div className="col-md-6 col-sm-12 p-3">
-              <label for="LoginPass">Password</label>
+              <label htmlFor="LoginPass">Password</label>
               <input
                 placeholder="password"
                 type="password"
@@ -50,7 +49,7 @@ export default function Register() {
                 value=""
                 id="flexCheckDefault"
               ></input>
-              <label className="form-check-label ps-2" for="flexCheckDefault">
+              <label className="form-check-label ps-2" htmlFor="flexCheckDefault">
                 I agree with <a>Privacy policy & terms</a>
               </label>
             </div>
@@ -79,7 +78,7 @@ export default function Register() {
             </div>
           </form>
           <div className="OutForm text-center mt-2">
-            Don't have an account? <a>Register</a>
+            Don&apos;t have an account? <a>Register</a>
           </div>
         </div>
       </div>
