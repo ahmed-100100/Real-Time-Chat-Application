@@ -1,8 +1,26 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useReducer } from "react";
+
+const initialValue = {
+  email: "",
+  password: "",
+};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "email":
+      return { ...state, email: action.payload };
+    case "password":
+      return { ...state, password: action.payload };
+    default:
+      throw new Error(`Unknown action type: ${action.type}`);
+  }
+};
 
 export default function Login() {
+  const [state, dispatch] = useReducer(reducer, initialValue);
+
   return (
     <div className="row justify-content-center align-items-center rows mx-3 my-2">
       <div className="form col-md-6 col-sm-12 ">
@@ -14,6 +32,10 @@ export default function Login() {
             type="email"
             className=" form-control p-3"
             id="LoginEmail"
+            value={state.email}
+            onChange={(event) =>
+              dispatch({ type: "email", payload: event.target.value })
+            }
           ></input>
           <div className="mt-3 d-flex justify-content-between">
             <label htmlFor="LoginPass">Password</label>
@@ -24,6 +46,10 @@ export default function Login() {
             type="password"
             className=" form-control p-3"
             id="LoginPass"
+            value={state.password}
+            onChange={(event) =>
+              dispatch({ type: "password", payload: event.target.value })
+            }
           ></input>
           <button type="button" className="LoginBtn form-control p-3">
             Account Login
@@ -48,7 +74,7 @@ export default function Login() {
           </div>
         </div>
         <div className="OutForm text-center mt-2">
-          Don&apos;t have an account? <a>Register</a>
+          Don&apos;t have an account? <Link to={"register"}>Register</Link>
         </div>
       </div>
     </div>

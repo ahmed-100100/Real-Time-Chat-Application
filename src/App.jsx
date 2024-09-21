@@ -8,8 +8,8 @@ import Register from "./Pages/Register";
 function App() {
   return (
     <div>
-      <Register />
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="register" element={<Register />} />
       </Routes>
     </div>
