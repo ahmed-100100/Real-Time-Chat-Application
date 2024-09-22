@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
-import { useReducer, useState } from "react";
-import { postUserData } from "../../api/axios";
+import { Link } from "react-router-dom";
+import { useContext, useReducer, useState } from "react";
+import { POST } from "../../api/axios";
 import Joi from "joi";
+import { MainContext } from "../../Contexts/MainContext";
 
 const initialValue = {
   name: "",
@@ -32,9 +32,9 @@ const reducer = (state, action) => {
   }
 };
 
-export default function Register({ setLogged }) {
+export default function Register() {
+  let { setLogged } = useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
-  const navigate = useNavigate();
   const [clientErrors, setClientErrors] = useState([]);
   const [serverErrors, setServerErrors] = useState("");
 
@@ -47,22 +47,21 @@ export default function Register({ setLogged }) {
           tlds: { allow: ["com", "net"] },
         })
         .required(),
-        password: Joi.string()
-        .pattern(new RegExp("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%?&])[A-Za-z\\d@$!%?&]{8,}$"))
+      password: Joi.string()
+        .pattern(
+          new RegExp(
+            "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%?&])[A-Za-z\\d@$!%?&]{8,}$"
+          )
+        )
         .required()
         .messages({
-          "string.pattern.base": "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.",
-        }),      
-      repeatPassword: Joi.any()
-        .valid(Joi.ref("password"))
-        .required()
-        .messages({
-          "any.only": "Passwords do not match",
+          "string.pattern.base":
+            "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.",
         }),
-      agree: Joi.boolean()
-      .valid(true)
-      .required()
-      .messages({
+      repeatPassword: Joi.any().valid(Joi.ref("password")).required().messages({
+        "any.only": "Passwords do not match",
+      }),
+      agree: Joi.boolean().valid(true).required().messages({
         "any.only": "Please agree with privacy policy & terms",
       }),
     });
@@ -82,25 +81,28 @@ export default function Register({ setLogged }) {
         email: state.email,
         password: state.password,
       };
-    postUserData("/api/users/register", payload)
-      .then((res) => {
-        if(res.data.success){
-          setLogged(true);
-          navigate("/home");
-        }
-      })
-      .catch((errMessage) => {
-        setClientErrors([]);
-        setServerErrors(errMessage);
-      });
+      POST("/api/users/register", payload)
+        .then((res) => {
+          if (res.data.success) {
+            setLogged(true);
+          }
+        })
+        .catch((errMessage) => {
+          setClientErrors([]);
+          setServerErrors(errMessage);
+        });
+    }
   }
-}
 
   return (
     <div className="container">
       <div className="row justify-content-center align-items-center rows">
         <div className="col-md-8 col-sm-10">
-          {serverErrors && <p className="alert alert-danger text-center my-3">{serverErrors}</p>}
+          {serverErrors && (
+            <p className="alert alert-danger text-center my-3">
+              {serverErrors}
+            </p>
+          )}
           {clientErrors.length > 0 &&
             clientErrors.map((err, i) => (
               <p key={i} className="alert alert-danger text-center my-3">
@@ -181,8 +183,7 @@ export default function Register({ setLogged }) {
                   className="form-check-label ps-2"
                   htmlFor="flexCheckDefault"
                 >
-                  I agree with{" "}
-                  <Link to="#">Privacy policy & terms</Link>
+                  I agree with <Link to="#">Privacy policy & terms</Link>
                 </label>
               </div>
               <div className="col-md-12 col-sm-12 p-3">
@@ -220,6 +221,3 @@ export default function Register({ setLogged }) {
     </div>
   );
 }
-Register.propTypes = {
-  setLogged: PropTypes.func.isRequired,
-};

@@ -1,16 +1,44 @@
-import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { GET, POST } from "../api/axios";
 export let MainContext = createContext("");
 export function MainContextProvider({ children }) {
-  let [logged, setLogged] = useState(false);
-  const navigate = useNavigate();
+  let [logged, setLogged] = useState(true);
+  let [loading, setLoading] = useState(false);
+  let [loggedUser, setLoggedUser] = useState({});
+
+  const checkLogin = () => {
+    setLoading(true);
+    GET("/api/users/profile")
+      .then((response) => {
+        if (response.data.success) {
+          setLoggedUser(response.data.data);
+          setLogged(true);
+        }
+      })
+      .catch(() => {
+        setLoggedUser({});
+        setLogged(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    checkLogin();
+  }, [logged]);
+
   function logOut() {
-    setLogged(false);
-    navigate("/");
+    POST("/api/users/logout", {}).finally(() => {
+      setLoggedUser({});
+      setLogged(false);
+    });
   }
   return (
-    <MainContext.Provider value={{ logged, setLogged, logOut }}>
+    <MainContext.Provider
+      value={{ logged, loggedUser, loading, setLogged, logOut }}
+    >
       {children}
     </MainContext.Provider>
   );
