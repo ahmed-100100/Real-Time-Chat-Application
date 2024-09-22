@@ -7,27 +7,27 @@ export function MainContextProvider({ children }) {
   let [loading, setLoading] = useState(false);
   let [loggedUser, setLoggedUser] = useState({});
 
-  const checkLogin = () => {
-    setLoading(true);
-    GET("/api/users/profile")
-      .then((response) => {
-        if (response.data.success) {
-          setLoggedUser(response.data.data);
-          setLogged(true);
-        }
-      })
-      .catch(() => {
-        setLoggedUser({});
-        setLogged(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  // const checkLogin = () => {
+  //   setLoading(true);
+  //   GET("/api/users/profile")
+  //     .then((response) => {
+  //       if (response.data.success) {
+  //         setLoggedUser(response.data.data);
+  //         setLogged(true);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setLoggedUser({});
+  //       setLogged(false);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
 
-  useEffect(() => {
-    checkLogin();
-  }, [logged]);
+  // useEffect(() => {
+  //   checkLogin();
+  // }, [logged]);
 
   function logOut() {
     POST("/api/users/logout", {}).finally(() => {
