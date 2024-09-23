@@ -9,25 +9,22 @@ import Home from "./Pages/Home";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
 import AuthRoutes from "./Components/AuthRoutes";
-import Navbar from "./Components/Navbar";
+
 function App() {
   return (
     <div>
       {/* <Navbar logOut={logOut} /> */}
       <div className="container">
-        <div className="row">
-          <Navbar />
-          <Routes>
-            <Route element={<AuthRoutes />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Route>
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/" element={<Home />} />
-            </Route>
-            <Route path="*" element={<h1>Not Found!</h1>} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route element={<AuthRoutes />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+          <Route path="*" element={<h1>Not Found!</h1>} />
+        </Routes>
       </div>
     </div>
   );

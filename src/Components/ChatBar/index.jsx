@@ -1,11 +1,8 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideoCamera, faPhone } from "@fortawesome/free-solid-svg-icons";
 import LogImg from "../../assets/images.png";
 
 export default function Chatbar() {
   return (
-    <div className="col-md-4 col-3 mt-3">
+    <div className="col-md-4 col-3">
       <div className="d-flex w-100 justify-content-start Bars  h-100 flex-column">
         <div className="w-100 justify-content-between d-flex flex-column p-3 bg-white rounded-4 FrindsGroup mb-3">
           <p>Friends</p>

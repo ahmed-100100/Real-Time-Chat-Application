@@ -1,12 +1,13 @@
-import { useContext } from "react";
-import { MainContext } from "../../Contexts/MainContext";
+import Navbar from "../../Components/Navbar";
+import Chatbar from "../../Components/ChatBar";
+import ChatRoom from "../../Components/ChatRoom";
 
 export default function Home() {
-  const { logOut } = useContext(MainContext);
   return (
-    <>
-      <h1>Home</h1>
-      <button onClick={() => logOut()}>Logout</button>
-    </>
+    <div className="row py-3 vh-100">
+      <Navbar />
+      <Chatbar /> 
+      <ChatRoom />
+    </div>
   );
 }

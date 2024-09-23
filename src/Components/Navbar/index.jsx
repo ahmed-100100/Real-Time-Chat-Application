@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext } from "react";
 import Pic from "../../assets/images.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,10 +8,13 @@ import {
   faGear,
   faDoorClosed,
 } from "@fortawesome/free-solid-svg-icons";
+import { MainContext } from "../../Contexts/MainContext";
 
 export default function Navbar() {
+  const { logOut } = useContext(MainContext);
+
   return (
-    <div className="col-md-1 col-12 mt-3">
+    <div className="col-md-1 col-12 ">
       <div className="p-2 NavSide row flex-md-column flex-row  align-items-center position-relative  rounded-4 h-100">
         <div className="col-md-10 col-3  my-auto">
           <div className="w-100">
@@ -42,9 +45,9 @@ export default function Navbar() {
         </div>
         <div className=" my-auto text-center col-md-10 col-3 flex-md-column flex-sm-row">
           <div className="my-4">
-            <a>
+            <button onClick={() => logOut()}>
               <FontAwesomeIcon className="Door" icon={faDoorClosed} />
-            </a>
+            </button>
           </div>
         </div>
       </div>

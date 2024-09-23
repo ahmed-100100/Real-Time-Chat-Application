@@ -1,12 +1,12 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideoCamera, faPhone } from "@fortawesome/free-solid-svg-icons";
 import LogImg from "../../assets/images.png";
 import "./style.css";
+import ReceiverMessage from "./components/ReceiverMessage";
 
 export default function ChatRoom() {
   return (
-    <div className="col-md-6 col-9 mt-3">
+    <div className="col-md-7 col-9">
       <div className="d-flex w-100 justify-content-end ChatLive">
         <div className="w-100 justify-content-between d-flex flex-column">
           <div className="d-flex justify-content-between bg-white p-3 h-auto rounded-top-4 ">
@@ -31,6 +31,7 @@ export default function ChatRoom() {
           </div>
           <div className="bdr w-auto mx-4"></div>
           <div className="h-100 bg-white flex-column p-3 align-items-end rounded-bottom-4 MessageBox position-relative">
+            <ReceiverMessage />
             <div className="d-flex position-absolute  inMass">
               <input></input>
             </div>
