@@ -17,8 +17,8 @@ export default function Navbar() {
     <div className="col-md-1 col-12 ">
       <div className="p-2 NavSide row flex-md-column flex-row  align-items-center position-relative  rounded-4 h-100">
         <div className="col-md-10 col-3  my-auto">
-          <div className="w-100">
-            <img src={Pic} className="w-75 rounded-circle" />
+          <div className="w-100 text-center">
+            <img src={Pic} className="w-100 rounded-circle" />
           </div>
         </div>
         <div className=" col-md-10 col-6  my-auto text-center d-flex justify-content-between flex-md-column flex-row">

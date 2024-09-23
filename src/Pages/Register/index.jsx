@@ -33,7 +33,7 @@ const reducer = (state, action) => {
 };
 
 export default function Register() {
-  let { setLogged } = useContext(MainContext);
+  let { setLogged, loading, setLoading } = useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [clientErrors, setClientErrors] = useState([]);
   const [serverErrors, setServerErrors] = useState("");
@@ -69,6 +69,7 @@ export default function Register() {
   }
 
   function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
     const { error } = validateData();
     if (error) {
@@ -90,6 +91,9 @@ export default function Register() {
         .catch((errMessage) => {
           setClientErrors([]);
           setServerErrors(errMessage);
+        })
+        .finally(() => {
+          setLoading(true);
         });
     }
   }
@@ -187,11 +191,20 @@ export default function Register() {
                 </label>
               </div>
               <div className="col-md-12 col-sm-12 p-3">
-                <input
-                  type="submit"
-                  value="Account Register"
-                  className="LoginBtn form-control p-3"
-                ></input>
+                {loading && clientErrors.length == 0 && serverErrors == "" ? (
+                  <div className="d-flex  justify-content-center p-3">
+                    <l-tailspin
+                      size="40"
+                      stroke="5"
+                      speed="0.9"
+                      color="black"
+                    ></l-tailspin>
+                  </div>
+                ) : (
+                  <button type="submit" className="LoginBtn form-control p-3">
+                    Account Login
+                  </button>
+                )}
               </div>
               <div className="bdr my-3 text-center"></div>
               <div className="w-100 text-center">

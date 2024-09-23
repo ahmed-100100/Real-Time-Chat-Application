@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="row py-3 vh-100">
       <Navbar />
-      <Chatbar /> 
+      <Chatbar />
       <ChatRoom />
     </div>
   );
