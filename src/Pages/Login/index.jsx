@@ -23,7 +23,7 @@ const reducer = (state, action) => {
 };
 
 export default function Login() {
-  let { setLogged } = useContext(MainContext);
+  let { setLogged, loading, setLoading } = useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -57,6 +57,7 @@ export default function Login() {
       email: state.email,
       password: state.password,
     };
+    setLoading(true);
     POST("/api/users/login", payload)
       .then((res) => {
         //localStorage.setItem("Token", res.data.jwt);
@@ -66,6 +67,9 @@ export default function Login() {
       })
       .catch((err) => {
         setErrorMessage(err ? err : "An error occurred");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -105,9 +109,13 @@ export default function Login() {
                 dispatch({ type: "password", payload: event.target.value })
               }
             />
-            <button type="submit" className="LoginBtn form-control p-3">
-              Account Login
-            </button>
+            {loading ? (
+              <p>loading</p>
+            ) : (
+              <button type="submit" className="LoginBtn form-control p-3">
+                Account Login
+              </button>
+            )}
             <div className="bdr my-3 text-center"></div>
             <div className="w-100 text-center">
               <p>OR LOGIN WITH</p>

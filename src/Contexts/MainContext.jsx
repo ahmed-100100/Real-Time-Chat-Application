@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { GET, POST } from "../api/axios";
 export let MainContext = createContext("");
 export function MainContextProvider({ children }) {
-  let [logged, setLogged] = useState(true);
+  let [logged, setLogged] = useState(false);
   let [loading, setLoading] = useState(false);
   let [loggedUser, setLoggedUser] = useState({});
 
@@ -37,7 +37,7 @@ export function MainContextProvider({ children }) {
   }
   return (
     <MainContext.Provider
-      value={{ logged, loggedUser, loading, setLogged, logOut }}
+      value={{ logged, loggedUser, setLoading, loading, setLogged, logOut }}
     >
       {children}
     </MainContext.Provider>
