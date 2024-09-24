@@ -61,8 +61,8 @@ label {
   border-top: none; 
 }
 .FriendsGroup {
-  max-height: 400px; /* Set a maximum height based on your layout */
-  overflow-y: auto;  /* Enable vertical scrolling */
+  max-height: 400px; 
+  overflow-y: auto;  
 }
 
 
