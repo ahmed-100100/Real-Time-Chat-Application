@@ -19,7 +19,7 @@ export default function ChatRoom({ isActiveChat }) {
   }
   return (
     <div
-      className={`col-lg-7 col-12 bg-white rounded-4 h-100 d-lg-flex ${
+      className={`col-lg-6 col-12 bg-white rounded-4 h-100 d-lg-flex ${
         isActiveChat ? "d-flex" : "d-none"
       }`}
     >

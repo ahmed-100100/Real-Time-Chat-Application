@@ -60,7 +60,8 @@ export default function Navbar({
                 icon={faUser}
                 onClick={() => {
                   setisActiveChat(false);
-                  setisActiveGrop(true);
+                  setisActiveGrop(false);
+                  setisActiveUser(true);
                 }}
               />
             </a>

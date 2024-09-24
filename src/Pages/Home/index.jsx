@@ -8,13 +8,13 @@ export default function Home() {
   let [isActiveUser, setisActiveUser] = useState(false);
   let [isActiveChat, setisActiveChat] = useState(true);
   return (
-    <div className="row p-3 vh-100">
+    <div className="row p-3 vh-100 justify-content-around">
       <Navbar
         setisActiveGrop={setisActiveGrop}
         setisActiveChat={setisActiveChat}
         setisActiveUser={setisActiveUser}
       />
-      <Chatbar isActiveGrop={isActiveGrop} />
+      <Chatbar isActiveGrop={isActiveGrop} isActiveUser={isActiveUser} />
       <ChatRoom isActiveChat={isActiveChat} />
     </div>
   );
