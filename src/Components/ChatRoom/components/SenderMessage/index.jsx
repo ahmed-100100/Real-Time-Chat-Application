@@ -1,3 +1,4 @@
+import "./style.css"
 export default function SenderMessage() {
   return (
     <div className="d-flex w-100 justify-content-end mt-2">

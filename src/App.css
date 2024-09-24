@@ -4,6 +4,19 @@
 body {
   background-color: #e4e3ff;
 }
+div p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #a3a3a3;
+}
+div a {
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--btncolor);
+  cursor: pointer;
+}
+
 .form {
   background-color: white;
   border-radius: 13px;
@@ -30,13 +43,7 @@ label {
   font-weight: 600;
   margin-top: 1rem;
 }
-div a {
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  color: var(--btncolor);
-  cursor: pointer;
-}
+
 .BTnIcon button {
   font-size: 18px;
   font-weight: 600;
@@ -47,11 +54,18 @@ div a {
   border-top: solid 1px #d2d2d2;
   width: 100%;
 }
-div p {
-  font-size: 16px;
-  font-weight: 600;
-  color: #a3a3a3;
+.bdr.no-border {
+  border-top: none;
 }
+.bdr:last-child {
+  border-top: none; 
+}
+.FriendsGroup {
+  max-height: 400px; /* Set a maximum height based on your layout */
+  overflow-y: auto;  /* Enable vertical scrolling */
+}
+
+
 .NavSide {
   background-color: var(--btncolor);
 }

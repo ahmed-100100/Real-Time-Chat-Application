@@ -1,10 +1,24 @@
 import LogImg from "../../assets/images.png";
+import "./style.css";
+import React, { useEffect, useRef } from "react";
 
 export default function Chatbar() {
+  const chatbarRef = useRef(null);
+
+  useEffect(() => {
+    const chatbar = chatbarRef.current;
+    if (chatbar.scrollHeight > chatbar.clientHeight) {
+      const lastBdr = chatbar.querySelector(".bdr:last-of-type");
+      if (lastBdr) {
+        lastBdr.classList.add("no-border");
+      }
+    }
+  }, []);
+
   return (
-    <div className="col-md-4 col-3">
+    <div className="col-md-4 col-3"  ref={chatbarRef}  >
       <div className="d-flex w-100 justify-content-start Bars  h-100 flex-column">
-        <div className="w-100 justify-content-between d-flex flex-column p-3 bg-white rounded-4 FrindsGroup mb-3">
+        <div className="sections w-100 justify-content-between d-flex flex-column p-3 bg-white rounded-4 FrindsGroup mb-3">
           <p>Friends</p>
           <div className="row users">
             <div className="col-md-2 col-sm-10 d-flex">
@@ -60,7 +74,7 @@ export default function Chatbar() {
             </div>
           </div>
         </div>
-        <div className="w-100 justify-content-between d-flex flex-column p-3 bg-white rounded-4 FrindsGroup mb-3">
+        <div className="sections w-100 justify-content-between d-flex flex-column p-3 bg-white rounded-4 FrindsGroup">
           <p>Groups</p>
           <div className="row users">
             <div className="col-md-2 col-sm-10 d-flex">
