@@ -5,6 +5,9 @@ import { useContext, useReducer, useState } from "react";
 import { POST } from "../../api/axios";
 import Joi from "joi";
 import { MainContext } from "../../Contexts/MainContext";
+import { tailspin } from "ldrs";
+
+tailspin.register();
 
 const initialValue = {
   email: "",
@@ -47,6 +50,7 @@ export default function Login() {
   }
 
   function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
     const { error } = validation();
     if (error) {
@@ -57,10 +61,10 @@ export default function Login() {
       email: state.email,
       password: state.password,
     };
-    setLoading(true);
     POST("/api/users/login", payload)
       .then((res) => {
         //localStorage.setItem("Token", res.data.jwt);
+
         if (res.data.success) {
           setLogged(true);
         }
@@ -109,8 +113,15 @@ export default function Login() {
                 dispatch({ type: "password", payload: event.target.value })
               }
             />
-            {loading ? (
-              <p>loading</p>
+            {loading && errorMessage == "" ? (
+              <div className="d-flex  justify-content-center p-3">
+                <l-tailspin
+                  size="40"
+                  stroke="5"
+                  speed="0.9"
+                  color="black"
+                ></l-tailspin>
+              </div>
             ) : (
               <button type="submit" className="LoginBtn form-control p-3">
                 Account Login
