@@ -5,9 +5,9 @@ body {
   /* height: 100vh; */
   height: 100%;
 }
-.line::after{
-  content: '';
-  border: 0.3px solid rgb(210 , 210, 210);
+.line::after {
+  content: "";
+  border: 0.3px solid rgb(210, 210, 210);
   position: absolute;
   width: 80%;
   margin: 0px auto;
@@ -15,22 +15,22 @@ body {
   right: 20px;
   bottom: 0px;
 }
-.line.ChatName{
+.line.ChatName {
   color: rgba(0, 0, 0, 0.898);
   font-family: Inter, sans-serif;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 1.5rem;
 }
-.line.seen{
-  color: #A3A3A3;
+.line.seen {
+  color: #a3a3a3;
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
 }
 .ChatLives a {
-  color: rgba(67, 109, 217, 1)!important;
+  color: rgba(67, 109, 217, 1) !important;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 1.5rem;
 }
 .NavChat {
   height: 15%;
@@ -72,10 +72,10 @@ body {
   outline: none;
   background-color: transparent;
   font-size: 16px;
-  color:rgb(38, 37, 37);
+  color: rgb(38, 37, 37);
   width: 100%;
-  resize: none; 
-  overflow: hidden; 
+  resize: none;
+  overflow: hidden;
 }
 .input-container .message-input::placeholder {
   color: rgba(163, 163, 163, 1);
@@ -88,14 +88,14 @@ body {
   cursor: pointer;
 }
 .mic-icon {
-  background-color: rgba(173, 198, 245, 1); 
-  width: 40px; 
+  background-color: rgba(173, 198, 245, 1);
+  width: 40px;
   height: 47px;
-  margin-left: 10px; 
+  margin-left: 10px;
   cursor: pointer;
 }
 
 .mic-icon svg {
-  color: #000000; 
-  font-size: 20px; 
+  color: #000000;
+  font-size: 20px;
 }

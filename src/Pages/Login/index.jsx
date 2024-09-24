@@ -56,6 +56,8 @@ export default function Login() {
     if (error) {
       setErrorMessage(error.message);
       return;
+    } else {
+      setErrorMessage("");
     }
     const payload = {
       email: state.email,

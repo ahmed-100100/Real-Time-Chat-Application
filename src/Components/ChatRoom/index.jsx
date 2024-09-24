@@ -18,10 +18,10 @@ export default function ChatRoom() {
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
   return (
-    <div className="col-md-7 col-9">
-      <div className="d-flex w-100 justify-content-end ChatLive position-relative ">
-        <div className="w-100 justify-content-between d-flex flex-column">
-          <div className="d-flex justify-content-between bg-white p-3 h-auto rounded-top-4 position-relative line ">
+    <div className="col-md-7 col-9 bg-white rounded-4">
+      <div className="d-flex w-100 justify-content-end ChatLive">
+        <div className="w-100 justify-content-between bg-white d-flex flex-column">
+          <div className="d-flex justify-content-between  p-3 h-auto  position-relative line ">
             <div className="d-flex align-items-center  position-relative">
               <div className="ImgChatBox w-25 ">
                 <img className=" rounded-circle w-50" src={LogImg} />
@@ -42,8 +42,7 @@ export default function ChatRoom() {
               </a>
             </div>
           </div>
-
-          <div className="h-100 bg-white flex-column p-3 align-items-end rounded-bottom-4 MessageBox position-relative">
+          <div className="h-100 bg-white flex-column p-3  align-items-end  MessageBox position-relative">
             <ReceiverMessage />
             <div className="d-flex align-items-center position-absolute typing">
               <div className="input-container d-flex align-items-center rounded-3 w-100">

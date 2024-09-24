@@ -1,6 +1,9 @@
 :root {
   --btncolor: #436dd9;
 }
+* {
+  font-family: Inter, sans-serif;
+}
 body {
   background-color: #e4e3ff;
 }
@@ -10,7 +13,7 @@ div p {
   color: #a3a3a3;
 }
 div a {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
   color: var(--btncolor);
@@ -29,7 +32,7 @@ label {
   font-weight: 600;
 }
 .title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #686868;
 }
@@ -39,13 +42,13 @@ label {
 .LoginBtn {
   color: white;
   background-color: var(--btncolor);
-  font-size: 18px;
+  font-size: 1.15rem;
   font-weight: 600;
   margin-top: 1rem;
 }
 
 .BTnIcon button {
-  font-size: 18px;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #545454;
   background-color: #d9d9d9;
@@ -58,13 +61,12 @@ label {
   border-top: none;
 }
 .bdr:last-child {
-  border-top: none; 
+  border-top: none;
 }
 .FriendsGroup {
-  max-height: 400px; 
-  overflow-y: auto;  
+  max-height: 400px;
+  overflow-y: auto;
 }
-
 
 .NavSide {
   background-color: var(--btncolor);

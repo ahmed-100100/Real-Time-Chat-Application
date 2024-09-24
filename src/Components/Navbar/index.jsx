@@ -6,7 +6,7 @@ import {
   faMessage,
   faBell,
   faGear,
-  faDoorClosed,
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
 import { MainContext } from "../../Contexts/MainContext";
 
@@ -45,9 +45,9 @@ export default function Navbar() {
         </div>
         <div className=" my-auto text-center col-md-10 col-3 flex-md-column flex-sm-row">
           <div className="my-4">
-            <button onClick={() => logOut()}>
-              <FontAwesomeIcon className="Door" icon={faDoorClosed} />
-            </button>
+            <a onClick={() => logOut()}>
+              <FontAwesomeIcon className="Door" icon={faDoorOpen} />
+            </a>
           </div>
         </div>
       </div>
