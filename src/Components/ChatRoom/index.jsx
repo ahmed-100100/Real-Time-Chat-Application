@@ -27,7 +27,7 @@ export default function ChatRoom() {
                 <img className=" rounded-circle w-50" src={LogImg} />
               </div>
               <div className="ps-2">
-                <span className="ChatName">Bro</span>
+                <span className="ChatName">Brooo</span>
                 <br></br>
                 <span className="seen">Last seen 9:50 pm</span>
               </div>
