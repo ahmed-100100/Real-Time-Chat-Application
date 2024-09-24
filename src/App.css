@@ -73,9 +73,15 @@ label {
 }
 .NavSideIc {
   text-decoration: none;
-  font-size: 27px;
+  font-size: 1.5rem;
   color: #f8f8f8;
+  cursor: pointer;
+  transition: 0.2s;
 }
+.NavSideIc:hover {
+  color: rgba(173, 198, 245, 1);
+}
+
 .Door {
   text-decoration: none;
   font-size: 27px;

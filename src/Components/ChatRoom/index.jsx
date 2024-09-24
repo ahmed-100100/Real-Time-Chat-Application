@@ -11,14 +11,18 @@ import LogImg from "../../assets/images.png";
 import "./style.css";
 import ReceiverMessage from "./components/ReceiverMessage";
 
-export default function ChatRoom() {
+export default function ChatRoom({ isActiveChat }) {
   function adjustTextareaHeight(event) {
     const textarea = event.target;
     textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
   return (
-    <div className="col-md-7 col-9 bg-white rounded-4">
+    <div
+      className={`col-lg-7 col-12 bg-white rounded-4 h-100 d-lg-flex ${
+        isActiveChat ? "d-flex" : "d-none"
+      }`}
+    >
       <div className="d-flex w-100 justify-content-end ChatLive">
         <div className="w-100 justify-content-between bg-white d-flex flex-column">
           <div className="d-flex justify-content-between  p-3 h-auto  position-relative line ">

@@ -1,13 +1,21 @@
 import Navbar from "../../Components/Navbar";
 import Chatbar from "../../Components/ChatBar";
 import ChatRoom from "../../Components/ChatRoom";
+import { useState } from "react";
 
 export default function Home() {
+  let [isActiveGrop, setisActiveGrop] = useState(false);
+  let [isActiveUser, setisActiveUser] = useState(false);
+  let [isActiveChat, setisActiveChat] = useState(true);
   return (
-    <div className="row py-3 vh-100">
-      <Navbar />
-      <Chatbar />
-      <ChatRoom />
+    <div className="row p-3 vh-100">
+      <Navbar
+        setisActiveGrop={setisActiveGrop}
+        setisActiveChat={setisActiveChat}
+        setisActiveUser={setisActiveUser}
+      />
+      <Chatbar isActiveGrop={isActiveGrop} />
+      <ChatRoom isActiveChat={isActiveChat} />
     </div>
   );
 }
