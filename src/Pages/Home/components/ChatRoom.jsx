@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
+import PropTypes from "prop-types"; // Importing PropTypes for prop validation
 
 // Dummy messages
 const messages = [
@@ -15,11 +16,11 @@ const messages = [
   { text: "All good! How about you?", time: "9:46 PM", sentByUser: true },
 ];
 
-const ChatRoom = () => {
+const ChatRoom = ({ isMobile }) => {
   return (
     <Grid
       item
-      xs={8}
+      xs={isMobile ? 12 : 8} // Set to 12 to take the full width
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -101,6 +102,10 @@ const ChatRoom = () => {
       <MessageInput />
     </Grid>
   );
+};
+
+ChatRoom.propTypes = {
+  isMobile: PropTypes.bool.isRequired, // isMobile is required and must be a boolean
 };
 
 export default ChatRoom;

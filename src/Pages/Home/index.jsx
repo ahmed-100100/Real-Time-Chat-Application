@@ -55,7 +55,7 @@ const ChatApp = () => {
         <ChatList showGroups={showGroups} isMobile={isMobile} />
 
         {/* Chat Room */}
-        <ChatRoom />
+        <ChatRoom isMobile={isMobile} />
       </Grid>
     </Box>
   );
