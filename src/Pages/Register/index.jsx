@@ -1,11 +1,21 @@
-import "./style.css";
+import { useContext, useReducer, useState } from "react";
+import { Link } from "react-router-dom";
+import Joi from "joi";
+import { POST } from "../../api/axios";
+import { MainContext } from "../../Contexts/MainContext";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Divider,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import Grid from "@mui/material/Grid2"; // Using Grid2 syntax from example
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router-dom";
-import { useContext, useReducer, useState } from "react";
-import { POST } from "../../api/axios";
-import Joi from "joi";
-import { MainContext } from "../../Contexts/MainContext";
 
 const initialValue = {
   name: "",
@@ -33,7 +43,7 @@ const reducer = (state, action) => {
 };
 
 export default function Register() {
-  let { setLogged, loading, setLoading } = useContext(MainContext);
+  const { setLogged, loading, setLoading } = useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [clientErrors, setClientErrors] = useState([]);
   const [serverErrors, setServerErrors] = useState("");
@@ -42,10 +52,7 @@ export default function Register() {
     const schema = Joi.object({
       name: Joi.string().alphanum().min(3).max(30).required(),
       email: Joi.string()
-        .email({
-          minDomainSegments: 2,
-          tlds: { allow: ["com", "net"] },
-        })
+        .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
         .required(),
       password: Joi.string()
         .pattern(
@@ -82,6 +89,7 @@ export default function Register() {
         email: state.email,
         password: state.password,
       };
+      setLoading(true);
       POST("/api/users/register", payload)
         .then((res) => {
           if (res.data.success) {
@@ -92,145 +100,218 @@ export default function Register() {
           setClientErrors([]);
           setServerErrors(errMessage);
         })
-        .finally(() => {
-          setLoading(true);
-        });
+        .finally(() => setLoading(false));
     }
   }
 
   return (
-    <div className="container">
-      <div className="row justify-content-center align-items-center rows">
-        <div className="col-md-8 col-sm-10">
-          {serverErrors && (
-            <p className="alert alert-danger text-center my-3">
-              {serverErrors}
-            </p>
-          )}
-          {clientErrors.length > 0 &&
-            clientErrors.map((err, i) => (
-              <p key={i} className="alert alert-danger text-center my-3">
-                {err.message}
-              </p>
-            ))}
-          <form onSubmit={handleSubmit}>
-            <div className="form row justify-content-center align-items-center p-3 my-3 mx-2">
-              <div className="col-md-6 col-sm-12 p-3">
-                <label htmlFor="LoginEmail">Full Name</label>
-                <input
-                  placeholder="John Doe"
-                  type="text"
-                  className="form-control p-3"
-                  id="LoginEmail"
-                  value={state.name}
-                  onChange={(event) =>
-                    dispatch({ type: "name", payload: event.target.value })
-                  }
-                ></input>
-              </div>
-              <div className="col-md-6 col-sm-12 p-3">
-                <label htmlFor="LoginEmail">Email Address</label>
-                <input
-                  placeholder="youremail@example.com"
-                  type="email"
-                  className="form-control p-3"
-                  id="LoginEmail"
-                  value={state.email}
-                  onChange={(event) =>
-                    dispatch({ type: "email", payload: event.target.value })
-                  }
-                ></input>
-              </div>
-              <div className="col-md-6 col-sm-12 p-3">
-                <label htmlFor="LoginPass">Password</label>
-                <input
-                  placeholder="password"
-                  type="password"
-                  className="form-control p-3"
-                  id="LoginPass"
-                  value={state.password}
-                  onChange={(event) =>
-                    dispatch({ type: "password", payload: event.target.value })
-                  }
-                ></input>
-              </div>
-              <div className="col-md-6 col-sm-12 p-3">
-                <label htmlFor="LoginRepeatPass">Repeat Password</label>
-                <input
-                  placeholder="Repeat password"
-                  type="password"
-                  className="form-control p-3"
-                  id="LoginRepeatPass"
-                  value={state.repeatPassword}
-                  onChange={(event) =>
-                    dispatch({
-                      type: "repeat-password",
-                      payload: event.target.value,
-                    })
-                  }
-                ></input>
-              </div>
-              <div className="col-md-12 col-sm-12 p-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="flexCheckDefault"
-                  checked={state.agree}
-                  onChange={(event) =>
-                    dispatch({
-                      type: "agree",
-                      payload: event.target.checked,
-                    })
-                  }
-                ></input>
-                <label
-                  className="form-check-label ps-2"
-                  htmlFor="flexCheckDefault"
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA", // Off white background
+      }}
+    >
+      <Box
+        width={{ xs: "100%", md: "50%" }}
+        mx="auto"
+        boxShadow={3}
+        p={4}
+        borderRadius={2}
+        bgcolor="#ffffff" // White background for the form
+      >
+        {serverErrors && (
+          <Typography color="error" variant="body2" align="center" my={2}>
+            {serverErrors}
+          </Typography>
+        )}
+        {clientErrors.length > 0 &&
+          clientErrors.map((err, i) => (
+            <Typography
+              key={i}
+              color="error"
+              variant="body2"
+              align="center"
+              my={1}
+            >
+              {err.message}
+            </Typography>
+          ))}
+        <form onSubmit={handleSubmit}>
+          <Typography variant="h5" mb={2} align="center" color="#333333">
+            Register
+          </Typography>
+          <Grid
+            container
+            rowSpacing={2}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <Grid size={6}>
+              <TextField
+                label="Full Name"
+                variant="outlined"
+                fullWidth
+                value={state.name}
+                onChange={(event) =>
+                  dispatch({ type: "name", payload: event.target.value })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Email Address"
+                variant="outlined"
+                fullWidth
+                value={state.email}
+                onChange={(event) =>
+                  dispatch({ type: "email", payload: event.target.value })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                fullWidth
+                value={state.password}
+                onChange={(event) =>
+                  dispatch({ type: "password", payload: event.target.value })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Repeat Password"
+                variant="outlined"
+                type="password"
+                fullWidth
+                value={state.repeatPassword}
+                onChange={(event) =>
+                  dispatch({
+                    type: "repeat-password",
+                    payload: event.target.value,
+                  })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.agree}
+                    onChange={(event) =>
+                      dispatch({ type: "agree", payload: event.target.checked })
+                    }
+                    sx={{ color: "#3A506B" }} // Primary color for checkbox
+                  />
+                }
+                label={
+                  <>
+                    I agree with{" "}
+                    <Link to="#" style={{ color: "#3A506B" }}>
+                      Privacy policy & terms
+                    </Link>
+                  </>
+                }
+              />
+            </Grid>
+            <Grid size={12}>
+              {loading ? (
+                <CircularProgress mx="auto" />
+              ) : (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#3A506B", // Primary color for button
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#5BC0BE", // Accent color on hover
+                    },
+                  }}
+                  size="large"
                 >
-                  I agree with <Link to="#">Privacy policy & terms</Link>
-                </label>
-              </div>
-              <div className="col-md-12 col-sm-12 p-3">
-                {loading && clientErrors.length == 0 && serverErrors == "" ? (
-                  <div className="d-flex  justify-content-center p-3">
-                    <l-tailspin
-                      size="40"
-                      stroke="5"
-                      speed="0.9"
-                      color="black"
-                    ></l-tailspin>
-                  </div>
-                ) : (
-                  <button type="submit" className="LoginBtn form-control p-3">
-                    Account Login
-                  </button>
-                )}
-              </div>
-              <div className="bdr my-3 text-center"></div>
-              <div className="w-100 text-center">
-                <p>OR SIGNUP WITH</p>
-              </div>
-              <div className="row justify-content-between g-2">
-                <div className="col-md-5 col-sm-12 BTnIcon">
-                  <button type="button" className="form-control p-3">
-                    <FontAwesomeIcon icon={faGoogle} className="pe-2" />
-                    <span>Google</span>
-                  </button>
-                </div>
-                <div className="col-md-5 col-sm-12 BTnIcon">
-                  <button type="button" className="form-control p-3">
-                    <FontAwesomeIcon icon={faFacebook} className="pe-2" />
-                    <span>Facebook</span>
-                  </button>
-                </div>
-              </div>
-              <div className="OutForm text-center mt-2">
-                Already have account? <Link to={"/"}>Login</Link>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+                  Account Register
+                </Button>
+              )}
+            </Grid>
+          </Grid>
+          <Divider sx={{ my: 3 }} />
+          <Typography align="center" color="#333333">
+            OR SIGN UP WITH
+          </Typography>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            mt={2}
+          >
+            <Grid size={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FontAwesomeIcon icon={faGoogle} />}
+                sx={{
+                  color: "#333333", // Text color
+                  borderColor: "#3A506B", // Primary border color
+                  "&:hover": {
+                    backgroundColor: "#5BC0BE", // Soft green background on hover
+                    color: "white",
+                  },
+                }}
+              >
+                Google
+              </Button>
+            </Grid>
+            <Grid size={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FontAwesomeIcon icon={faFacebook} />}
+                sx={{
+                  color: "#333333", // Text color
+                  borderColor: "#3A506B", // Primary border color
+                  "&:hover": {
+                    backgroundColor: "#5BC0BE", // Soft green background on hover
+                    color: "white",
+                  },
+                }}
+              >
+                Facebook
+              </Button>
+            </Grid>
+          </Grid>
+          <Box mt={3} textAlign="center">
+            <Typography color="#333333">
+              Already have an account?{" "}
+              <Link to="/" style={{ color: "#3A506B" }}>
+                Login
+              </Link>
+            </Typography>
+          </Box>
+        </form>
+      </Box>
+    </Box>
   );
 }

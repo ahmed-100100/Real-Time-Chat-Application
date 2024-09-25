@@ -1,13 +1,19 @@
+import { useContext, useReducer, useState } from "react";
+import { Link } from "react-router-dom";
+import Joi from "joi";
+import { POST } from "../../api/axios";
+import { MainContext } from "../../Contexts/MainContext";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+  Divider,
+} from "@mui/material";
+import Grid from "@mui/material/Grid2"; // Grid2 syntax as requested
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router-dom";
-import { useContext, useReducer, useState } from "react";
-import { POST } from "../../api/axios";
-import Joi from "joi";
-import { MainContext } from "../../Contexts/MainContext";
-import { tailspin } from "ldrs";
-
-tailspin.register();
 
 const initialValue = {
   email: "",
@@ -26,7 +32,7 @@ const reducer = (state, action) => {
 };
 
 export default function Login() {
-  let { setLogged, loading, setLoading } = useContext(MainContext);
+  const { setLogged, loading, setLoading } = useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -65,8 +71,6 @@ export default function Login() {
     };
     POST("/api/users/login", payload)
       .then((res) => {
-        //localStorage.setItem("Token", res.data.jwt);
-
         if (res.data.success) {
           setLogged(true);
         }
@@ -80,79 +84,155 @@ export default function Login() {
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center rows mx-3 my-2">
-      <div className="form col-md-6 col-sm-12 ">
-        {errorMessage.length ? (
-          <p className="alert alert-danger">{errorMessage}</p>
-        ) : (
-          <></>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#FAFAFA", // Off white background
+      }}
+    >
+      <Box
+        width={{ xs: "100%", md: "50%" }}
+        mx="auto"
+        boxShadow={3}
+        p={4}
+        borderRadius={2}
+        bgcolor="#ffffff" // White background for the form
+      >
+        {errorMessage && (
+          <Typography color="error" variant="body2" align="center" my={2}>
+            {errorMessage}
+          </Typography>
         )}
         <form onSubmit={handleSubmit}>
-          <div className="form-group p-4 w-100  g-2">
-            <p className="title">Login</p>
-            <label htmlFor="LoginEmail">Email Address</label>
-            <input
-              placeholder="youremail@example.com"
-              type="email"
-              className="form-control p-3"
-              id="LoginEmail"
-              value={state.email}
-              onChange={(event) =>
-                dispatch({ type: "email", payload: event.target.value })
-              }
-            />
-            <div className="mt-3 d-flex justify-content-between">
-              <label htmlFor="LoginPass">Password</label>
-              <Link className="lin">Forget?</Link>
-            </div>
-            <input
-              placeholder="password"
-              type="password"
-              className="form-control p-3"
-              id="LoginPass"
-              value={state.password}
-              onChange={(event) =>
-                dispatch({ type: "password", payload: event.target.value })
-              }
-            />
-            {loading && errorMessage == "" ? (
-              <div className="d-flex  justify-content-center p-3">
-                <l-tailspin
-                  size="40"
-                  stroke="5"
-                  speed="0.9"
-                  color="black"
-                ></l-tailspin>
-              </div>
-            ) : (
-              <button type="submit" className="LoginBtn form-control p-3">
-                Account Login
-              </button>
-            )}
-            <div className="bdr my-3 text-center"></div>
-            <div className="w-100 text-center">
-              <p>OR LOGIN WITH</p>
-            </div>
-            <div className="row justify-content-between g-2">
-              <div className="col-md-5 col-sm-12 BTnIcon">
-                <button type="button" className="form-control p-3">
-                  <FontAwesomeIcon icon={faGoogle} className="pe-2" />
-                  <span>Google</span>
-                </button>
-              </div>
-              <div className="col-md-5 col-sm-12 BTnIcon">
-                <button type="button" className="form-control p-3">
-                  <FontAwesomeIcon icon={faFacebook} className="pe-2" />
-                  <span>Facebook</span>
-                </button>
-              </div>
-            </div>
-          </div>
+          <Typography variant="h5" mb={2} align="center" color="#333333">
+            Login
+          </Typography>
+          <Grid
+            container
+            rowSpacing={2}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <Grid size={12}>
+              <TextField
+                label="Email Address"
+                variant="outlined"
+                fullWidth
+                value={state.email}
+                onChange={(event) =>
+                  dispatch({ type: "email", payload: event.target.value })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={12}>
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                fullWidth
+                value={state.password}
+                onChange={(event) =>
+                  dispatch({ type: "password", payload: event.target.value })
+                }
+                sx={{
+                  backgroundColor: "#E8E8E8", // Light gray background for input
+                  borderRadius: "4px",
+                }}
+              />
+            </Grid>
+            <Grid size={12}>
+              <Box display="flex" justifyContent="space-between">
+                <Link to="/forgot-password">
+                  <Typography variant="body2" color="#3A506B">
+                    Forgot Password?
+                  </Typography>
+                </Link>
+              </Box>
+            </Grid>
+            <Grid size={12}>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#3A506B", // Primary color for the button
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#5BC0BE", // Accent color on hover
+                    },
+                  }}
+                  size="large"
+                >
+                  Account Login
+                </Button>
+              )}
+            </Grid>
+          </Grid>
+          <Divider sx={{ my: 3 }} />
+          <Typography align="center" color="#333333">
+            OR LOGIN WITH
+          </Typography>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            mt={2}
+          >
+            <Grid size={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FontAwesomeIcon icon={faGoogle} />}
+                sx={{
+                  color: "#333333", // Text color
+                  borderColor: "#3A506B", // Primary border color
+                  "&:hover": {
+                    backgroundColor: "#5BC0BE", // Soft green background on hover
+                    color: "white",
+                  },
+                }}
+              >
+                Google
+              </Button>
+            </Grid>
+            <Grid size={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FontAwesomeIcon icon={faFacebook} />}
+                sx={{
+                  color: "#333333", // Text color
+                  borderColor: "#3A506B", // Primary border color
+                  "&:hover": {
+                    backgroundColor: "#5BC0BE", // Soft green background on hover
+                    color: "white",
+                  },
+                }}
+              >
+                Facebook
+              </Button>
+            </Grid>
+          </Grid>
+          <Box mt={3} textAlign="center">
+            <Typography color="#333333">
+              Don&apos;t have an account?{" "}
+              <Link to="/register" style={{ color: "#3A506B" }}>
+                Register
+              </Link>
+            </Typography>
+          </Box>
         </form>
-        <div className="OutForm text-center mt-2">
-          Don&apos;t have an account? <Link to={"/register"}>Register</Link>
-        </div>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
