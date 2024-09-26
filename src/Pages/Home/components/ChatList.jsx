@@ -1,3 +1,4 @@
+import { AddIcCallOutlined } from "@mui/icons-material";
 import {
   Grid,
   Typography,
@@ -7,6 +8,7 @@ import {
   Avatar,
   ListItemText,
   TextField,
+  Button,
 } from "@mui/material";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
 
@@ -39,7 +41,12 @@ const ChatList = ({ showGroups, isMobile }) => {
     <Grid
       item
       xs={isMobile ? 12 : 3}
-      sx={{ padding: 2, height: "100%", backgroundColor: "#E8E8E8" }}
+      sx={{
+        padding: 2,
+        height: "100%",
+        backgroundColor: "#E8E8E8",
+        position: "relative",
+      }}
     >
       <TextField
         fullWidth
@@ -97,6 +104,23 @@ const ChatList = ({ showGroups, isMobile }) => {
           </List>
         </>
       )}
+      <Button
+        variant="contained"
+        sx={{
+          borderRadius: "50%",
+          minWidth: "50px",
+          minHeight: "50px",
+          backgroundColor: "#5BC0BE",
+          ":hover": {
+            backgroundColor: "darkblue",
+          },
+          position: "absolute",
+          bottom: "1rem",
+          right: "1rem",
+        }}
+      >
+        <AddIcCallOutlined />
+      </Button>
     </Grid>
   );
 };
