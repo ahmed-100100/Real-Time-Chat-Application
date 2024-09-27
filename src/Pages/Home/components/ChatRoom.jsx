@@ -17,7 +17,6 @@ const messages = [
 ];
 
 const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
-  const Userid = UserProfile._id;
   return (
     <Grid
       item
@@ -73,22 +72,20 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
           overflowY: "auto",
         }}
       >
-        {Allmessage.map((message, index) => (
+        {messages.map((message, index) => (
           <Box
             key={index}
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems:
-                message.sender._id == Userid ? "flex-end" : "flex-start",
+              alignItems: message.sentByUser ? "flex-end" : "flex-start",
             }}
           >
             <Paper
               sx={{
                 padding: 1,
-                backgroundColor:
-                  message.sender._id == Userid ? "#5BC0BE" : "#E2E8F0",
-                color: message.sender._id == Userid ? "black" : "#333333",
+                backgroundColor: message.sentByUser ? "#5BC0BE" : "#E2E8F0",
+                color: message.sentByUser ? "black" : "#333333",
                 borderRadius: 2,
                 width: "fit-content",
               }}
@@ -96,7 +93,7 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
               <Typography variant="body1">{message.text}</Typography>
             </Paper>
             <Typography variant="caption" color="textSecondary">
-              {message.createdAt}
+              {message.time}
             </Typography>
           </Box>
         ))}

@@ -41,6 +41,15 @@ const chatData = [
 ];
 
 const ChatList = ({ showGroups, isMobile }) => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   return (
     <Grid
       item
