@@ -1,12 +1,15 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import PropTypes from "prop-types";
-import { GET, POST } from "../api/axios";
+import { POST } from "../api/axios";
 export let MainContext = createContext("");
 export function MainContextProvider({ children }) {
   let [logged, setLogged] = useState(false);
   let [loading, setLoading] = useState(false);
   let [loggedUser, setLoggedUser] = useState({});
+  let [currentChatID, setCurrentChatID] = useState("");
+  const [chatList, setChatList] = useState([]);
 
+  
   // const checkLogin = () => {
   //   setLoading(true);
   //   GET("/api/users/profile")
@@ -37,7 +40,18 @@ export function MainContextProvider({ children }) {
   }
   return (
     <MainContext.Provider
-      value={{ logged, loggedUser, setLoading, loading, setLogged, logOut }}
+      value={{
+        logged,
+        loggedUser,
+        setLoading,
+        loading,
+        setLogged,
+        logOut,
+        chatList,
+        setChatList,
+        currentChatID,
+        setCurrentChatID,
+      }}
     >
       {children}
     </MainContext.Provider>

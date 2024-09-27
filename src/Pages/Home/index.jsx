@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Grid, Box, IconButton, Drawer, useMediaQuery } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
@@ -6,34 +6,40 @@ import Sidebar from "./components/Sidebar";
 import ChatList from "./components/ChatList";
 import ChatRoom from "./components/ChatRoom";
 import { GET } from "../../api/axios";
+import { MainContext } from "../../Contexts/MainContext";
 
 const ChatApp = () => {
   const [showGroups, setShowGroups] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  let [Allmessage, setAllmessage] = useState([]);
+  let [allMessage, setAllMessage] = useState([]);
   const [UserProfile, setUserProfile] = useState([]);
+  const { currentChatID } = useContext(MainContext);
+
   useEffect(() => {
-    getMessage();
     getProfileUser();
-  }, [Allmessage]);
+  }, []);
+  useEffect(() => {
+    const getMessage = () => {
+      GET(`/api/messages/${currentChatID}`)
+        .then((res) => {
+          setAllMessage(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getMessage();
+  }, [currentChatID]);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const getProfileUser = () => {
-    GET("/api/users/profile")
+  const getProfileUser = async () => {
+    await GET("/api/users/profile")
       .then((res) => {
         setUserProfile(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const getMessage = () => {
-    GET("/api/messages/66eebba4b15bf35dabd869f1")
-      .then((res) => {
-        setAllmessage(res.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -79,14 +85,15 @@ const ChatApp = () => {
         <ChatList
           showGroups={showGroups}
           isMobile={isMobile}
-          Allmessage={Allmessage}
+          allMessage={allMessage}
         />
 
         {/* Chat Room */}
         <ChatRoom
           isMobile={isMobile}
-          Allmessage={Allmessage}
+          allMessage={allMessage}
           UserProfile={UserProfile}
+          setAllMessage={setAllMessage}
         />
       </Grid>
     </Box>

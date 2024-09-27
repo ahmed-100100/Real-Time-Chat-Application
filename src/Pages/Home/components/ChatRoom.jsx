@@ -20,7 +20,7 @@ const messages = [
   { text: "All good! How about you?", time: "9:46 PM", sentByUser: true },
 ];
 
-const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
+const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
   const [MessageId, setMessageId] = useState(null);
   const userId = UserProfile._id;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -37,12 +37,17 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
   const handleClickDelete = () => {
     DELETE(`/api/messages/delete/${MessageId}`)
       .then((res) => {
-        console.log(res);
+        const deletedMessage = res.data.data;
+        const newMessages = [...allMessage].filter(
+          (message) => message._id !== deletedMessage._id
+        );
+        setAllMessage(newMessages);
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
   return (
     <Grid
       item
@@ -98,7 +103,7 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
           overflowY: "auto",
         }}
       >
-        {Allmessage.map((message, index) => (
+        {allMessage.map((message, index) => (
           <Box
             key={index}
             sx={{

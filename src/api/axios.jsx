@@ -18,7 +18,7 @@ export async function GET(url) {
     });
     return response;
   } catch (error) {
-    throw error.response.data.message;
+    throw error?.response?.data?.message;
   }
 }
 export async function DELETE(url) {

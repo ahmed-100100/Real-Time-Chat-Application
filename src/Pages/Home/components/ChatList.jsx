@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AddIcCallOutlined, GroupAddOutlined } from "@mui/icons-material";
 import {
   Grid,
@@ -12,35 +12,13 @@ import {
   Button,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import CustomModal from './CustomModal';
-
-// Dummy data for chat groups/friends
-const chatData = [
-  {
-    name: "Game Boys",
-    lastMessage: "Last message preview...",
-    lastTime: "9:30 PM",
-  },
-  {
-    name: "Just Fun",
-    lastMessage: "Last message preview...",
-    lastTime: "8:45 PM",
-  },
-  {
-    name: "We R Unique",
-    lastMessage: "Last message preview...",
-    lastTime: "7:00 PM",
-  },
-  {
-    name: "Friendship Forever",
-    lastMessage: "Last message preview...",
-    lastTime: "6:20 PM",
-  },
-];
+import CustomModal from "./CustomModal";
+import { GET } from "../../../api/axios";
+import { MainContext } from "../../../Contexts/MainContext";
 
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
-
+  const { chatList, setChatList, setCurrentChatID } = useContext(MainContext);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -48,6 +26,20 @@ const ChatList = ({ showGroups, isMobile }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  useEffect(() => {
+    const getChatList = async () => {
+      await GET(
+        `/api/${showGroups ? "groupChats" : "chats"}/${
+          showGroups ? "userChats/all" : "userChats"
+        }`
+      ).then((response) => {
+        return setChatList(response.data.data);
+      });
+    }; // Memoizing the function based on showGroups and setChatList
+
+    getChatList(); // Triggering only when getChatList changes
+  }, [setChatList, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
 
   return (
     <Grid
@@ -77,20 +69,29 @@ const ChatList = ({ showGroups, isMobile }) => {
             Groups
           </Typography>
           <List>
-            {chatData.map((group) => (
-              <ListItem button key={group.name} disablePadding>
-                <ListItemAvatar>
-                  <Avatar src="/path/to/group-image.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={group.name}
-                  secondary={group.lastMessage}
-                />
-                <Typography variant="body2" color="textSecondary">
-                  {group.lastTime}
-                </Typography>
-              </ListItem>
-            ))}
+            {Array.isArray(chatList) &&
+              chatList.map((group) => (
+                <ListItem
+                  button
+                  onClick={() => {
+                    console.log(group._id);
+                    setCurrentChatID(group._id);
+                  }}
+                  key={group._id}
+                  disablePadding
+                >
+                  <ListItemAvatar>
+                    <Avatar src="/path/to/group-image.jpg" />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={group.groupName}
+                    secondary={group.lastMessage}
+                  />
+                  <Typography variant="body2" color="textSecondary">
+                    {group.lastTime}
+                  </Typography>
+                </ListItem>
+              ))}
           </List>
         </>
       ) : (
@@ -99,20 +100,29 @@ const ChatList = ({ showGroups, isMobile }) => {
             Friends
           </Typography>
           <List>
-            {chatData.map((friend) => (
-              <ListItem button key={friend.name} disablePadding>
-                <ListItemAvatar>
-                  <Avatar src="/path/to/friend-image.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={friend.name}
-                  secondary={friend.lastMessage}
-                />
-                <Typography variant="body2" color="textSecondary">
-                  {friend.lastTime}
-                </Typography>
-              </ListItem>
-            ))}
+            {Array.isArray(chatList) &&
+              chatList?.map((friend) => (
+                <ListItem
+                  onClick={() => {
+                    console.log(friend._id);
+                    setCurrentChatID(friend._id);
+                  }}
+                  button
+                  key={friend._id}
+                  disablePadding
+                >
+                  <ListItemAvatar>
+                    <Avatar src="/path/to/friend-image.jpg" />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={friend.name}
+                    secondary={friend?.lastMessage?.text ?? "no messages yet"}
+                  />
+                  <Typography variant="body2" color="textSecondary">
+                    {friend.lastTime}
+                  </Typography>
+                </ListItem>
+              ))}
           </List>
         </>
       )}
@@ -161,7 +171,11 @@ const ChatList = ({ showGroups, isMobile }) => {
       )}
 
       {/* Custom Modal component */}
-      <CustomModal open={openModal} handleClose={handleCloseModal} showGroups={showGroups} />
+      <CustomModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        showGroups={showGroups}
+      />
     </Grid>
   );
 };
