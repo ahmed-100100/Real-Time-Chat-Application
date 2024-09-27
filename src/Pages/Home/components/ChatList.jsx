@@ -1,4 +1,5 @@
-import { AddIcCallOutlined } from "@mui/icons-material";
+import { useState } from "react";
+import { AddIcCallOutlined, Close as CloseIcon } from "@mui/icons-material";
 import {
   Grid,
   Typography,
@@ -9,8 +10,11 @@ import {
   ListItemText,
   TextField,
   Button,
+  IconButton,
 } from "@mui/material";
-import PropTypes from "prop-types"; // Importing PropTypes for prop validation
+import { Modal } from '@mui/base/Modal';
+import PropTypes from "prop-types";
+import ComboBox from './ComboBox';  // Import the ComboBox
 
 // Dummy data for chat groups/friends
 const chatData = [
@@ -37,6 +41,16 @@ const chatData = [
 ];
 
 const ChatList = ({ showGroups, isMobile }) => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Grid
       item
@@ -104,31 +118,79 @@ const ChatList = ({ showGroups, isMobile }) => {
           </List>
         </>
       )}
+
+      {/* Button to open the modal */}
       <Button
         variant="contained"
         sx={{
           borderRadius: "50%",
           minWidth: "50px",
           minHeight: "50px",
-          backgroundColor: "#5BC0BE",
+          backgroundColor: "#3A506B",
           ":hover": {
-            backgroundColor: "darkblue",
+            color: "black",
+            backgroundColor: "#E8E8E8",
           },
           position: "absolute",
           bottom: "1rem",
           right: "1rem",
         }}
+        onClick={handleOpenModal}
       >
         <AddIcCallOutlined />
       </Button>
+
+      {/* MUI Modal */}
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+        open={openModal}
+        onClose={handleCloseModal}
+      >
+        <div
+          style={{
+            color: 'white',
+            backgroundColor: '#3A506B',
+            padding: '20px',
+            borderRadius: '8px',
+            textAlign: 'center',
+            maxWidth: '500px', // Increase modal width
+            margin: 'auto',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          {/* Close icon in top-right corner */}
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              color: 'white',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <h2 id="modal-title" style={{ margin: '30px' }}>Add Friends By Email</h2>
+          
+          {/* ComboBox for email search */}
+          <ComboBox />
+
+        </div>
+      </Modal>
     </Grid>
   );
 };
 
 // Adding propTypes validation
 ChatList.propTypes = {
-  showGroups: PropTypes.bool.isRequired, // showGroups is required and must be a boolean
-  isMobile: PropTypes.bool.isRequired, // isMobile is required and must be a boolean
+  showGroups: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired,
 };
 
 export default ChatList;

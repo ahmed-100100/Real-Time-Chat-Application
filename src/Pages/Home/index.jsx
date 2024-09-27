@@ -3,8 +3,8 @@ import { Grid, Box, IconButton, Drawer, useMediaQuery } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import Sidebar from "./components/Sidebar";
-import ChatList from "./components/Chatlist";
-import ChatRoom from "./components/Chatroom";
+import ChatList from "./components/ChatList";
+import ChatRoom from "./components/ChatRoom";
 
 const ChatApp = () => {
   const [showGroups, setShowGroups] = useState(true);
