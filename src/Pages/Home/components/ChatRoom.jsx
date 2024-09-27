@@ -5,10 +5,14 @@ import {
   Avatar,
   IconButton,
   Paper,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
+import { useState } from "react";
+import { DELETE } from "../../../api/axios";
 
 // Dummy messages
 const messages = [
@@ -17,6 +21,28 @@ const messages = [
 ];
 
 const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
+  const [MessageId, setMessageId] = useState(null);
+  const userId = UserProfile._id;
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event, messageId) => {
+    setAnchorEl(event.currentTarget);
+    setMessageId(messageId);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setMessageId(null);
+  };
+  const handleClickDelete = () => {
+    DELETE(`/api/messages/delete/${MessageId}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <Grid
       item
@@ -72,28 +98,55 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
           overflowY: "auto",
         }}
       >
-        {messages.map((message, index) => (
+        {Allmessage.map((message, index) => (
           <Box
             key={index}
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: message.sentByUser ? "flex-end" : "flex-start",
+              alignItems:
+                message.sender._id == userId ? "flex-end" : "flex-start",
             }}
           >
-            <Paper
-              sx={{
-                padding: 1,
-                backgroundColor: message.sentByUser ? "#5BC0BE" : "#E2E8F0",
-                color: message.sentByUser ? "black" : "#333333",
-                borderRadius: 2,
-                width: "fit-content",
-              }}
-            >
-              <Typography variant="body1">{message.text}</Typography>
-            </Paper>
+            <Box sx={{ display: "flex" }}>
+              {message.sender._id == userId ? (
+                <MoreVert
+                  onClick={(event) => handleClick(event, message._id)}
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <></>
+              )}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    console.log(MessageId);
+                    handleClickDelete();
+                    handleClose();
+                  }}
+                >
+                  Delete
+                </MenuItem>
+              </Menu>
+              <Paper
+                sx={{
+                  padding: 1,
+                  backgroundColor:
+                    message.sender._id == userId ? "#5BC0BE" : "#E2E8F0",
+                  color: message.sender._id == userId ? "black" : "#333333",
+                  borderRadius: 2,
+                  width: "fit-content",
+                }}
+              >
+                <Typography variant="body1">{message.text}</Typography>
+              </Paper>
+            </Box>
             <Typography variant="caption" color="textSecondary">
-              {message.time}
+              {"0"}
             </Typography>
           </Box>
         ))}

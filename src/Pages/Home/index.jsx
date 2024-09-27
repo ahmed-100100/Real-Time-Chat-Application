@@ -17,7 +17,7 @@ const ChatApp = () => {
   useEffect(() => {
     getMessage();
     getProfileUser();
-  }, []);
+  }, [Allmessage]);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -34,7 +34,6 @@ const ChatApp = () => {
     GET("/api/messages/66eebba4b15bf35dabd869f1")
       .then((res) => {
         setAllmessage(res.data.data);
-        console.log(Allmessage);
       })
       .catch((err) => {
         console.log(err);
