@@ -36,7 +36,7 @@ const chatData = [
   },
 ];
 
-const ChatList = ({ showGroups, isMobile }) => {
+const ChatList = ({ showGroups, isMobile, Allmessage }) => {
   return (
     <Grid
       item
@@ -87,17 +87,17 @@ const ChatList = ({ showGroups, isMobile }) => {
             Friends
           </Typography>
           <List>
-            {chatData.map((friend) => (
-              <ListItem button key={friend.name} disablePadding>
+            {Allmessage.map((Allmessage) => (
+              <ListItem button key={Allmessage.name} disablePadding>
                 <ListItemAvatar>
                   <Avatar src="/path/to/friend-image.jpg" />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={friend.name}
-                  secondary={friend.lastMessage}
+                  primary={Allmessage.sender.name}
+                  secondary={"0"}
                 />
                 <Typography variant="body2" color="textSecondary">
-                  {friend.lastTime}
+                  {0}
                 </Typography>
               </ListItem>
             ))}

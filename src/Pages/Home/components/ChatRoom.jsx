@@ -6,11 +6,7 @@ import {
   IconButton,
   Paper,
 } from "@mui/material";
-import {
-  Phone,
-  VideoCall,
-  MoreVert,
-} from "@mui/icons-material";
+import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
 
@@ -20,7 +16,8 @@ const messages = [
   { text: "All good! How about you?", time: "9:46 PM", sentByUser: true },
 ];
 
-const ChatRoom = ({ isMobile }) => {
+const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
+  const Userid = UserProfile._id;
   return (
     <Grid
       item
@@ -76,20 +73,22 @@ const ChatRoom = ({ isMobile }) => {
           overflowY: "auto",
         }}
       >
-        {messages.map((message, index) => (
+        {Allmessage.map((message, index) => (
           <Box
             key={index}
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: message.sentByUser ? "flex-end" : "flex-start",
+              alignItems:
+                message.sender._id == Userid ? "flex-end" : "flex-start",
             }}
           >
             <Paper
               sx={{
                 padding: 1,
-                backgroundColor: message.sentByUser ? "#5BC0BE" : "#E2E8F0",
-                color: message.sentByUser ? "black" : "#333333",
+                backgroundColor:
+                  message.sender._id == Userid ? "#5BC0BE" : "#E2E8F0",
+                color: message.sender._id == Userid ? "black" : "#333333",
                 borderRadius: 2,
                 width: "fit-content",
               }}
@@ -97,7 +96,7 @@ const ChatRoom = ({ isMobile }) => {
               <Typography variant="body1">{message.text}</Typography>
             </Paper>
             <Typography variant="caption" color="textSecondary">
-              {message.time}
+              {message.createdAt}
             </Typography>
           </Box>
         ))}
