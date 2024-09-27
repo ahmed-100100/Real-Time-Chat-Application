@@ -100,17 +100,17 @@ const ChatList = ({ showGroups, isMobile }) => {
             Friends
           </Typography>
           <List>
-            {Allmessage.map((Allmessage) => (
-              <ListItem button key={Allmessage.name} disablePadding>
+            {chatData.map((friend) => (
+              <ListItem button key={friend.name} disablePadding>
                 <ListItemAvatar>
                   <Avatar src="/path/to/friend-image.jpg" />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={Allmessage.sender.name}
-                  secondary={"0"}
+                  primary={friend.name}
+                  secondary={friend.lastMessage}
                 />
                 <Typography variant="body2" color="textSecondary">
-                  {0}
+                  {friend.lastTime}
                 </Typography>
               </ListItem>
             ))}
