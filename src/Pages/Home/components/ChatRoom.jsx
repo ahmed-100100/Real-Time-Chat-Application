@@ -108,7 +108,7 @@ const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
                 message.sender._id == userId ? "flex-end" : "flex-start",
             }}
           >
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               {message.sender._id == userId ? (
                 <MoreVert
                   onClick={(event) => handleClick(event, message._id)}
