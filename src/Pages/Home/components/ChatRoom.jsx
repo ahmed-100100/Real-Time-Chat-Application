@@ -6,11 +6,7 @@ import {
   IconButton,
   Paper,
 } from "@mui/material";
-import {
-  Phone,
-  VideoCall,
-  MoreVert,
-} from "@mui/icons-material";
+import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
 
@@ -20,7 +16,7 @@ const messages = [
   { text: "All good! How about you?", time: "9:46 PM", sentByUser: true },
 ];
 
-const ChatRoom = ({ isMobile }) => {
+const ChatRoom = ({ isMobile, Allmessage, UserProfile }) => {
   return (
     <Grid
       item

@@ -1,19 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Box, IconButton, Drawer, useMediaQuery } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import Sidebar from "./components/Sidebar";
 import ChatList from "./components/ChatList";
 import ChatRoom from "./components/ChatRoom";
+import { GET } from "../../api/axios";
 
 const ChatApp = () => {
   const [showGroups, setShowGroups] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  let [Allmessage, setAllmessage] = useState([]);
+  const [UserProfile, setUserProfile] = useState([]);
+  useEffect(() => {
+    getMessage();
+    getProfileUser();
+  }, []);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+  const getProfileUser = () => {
+    GET("/api/users/profile")
+      .then((res) => {
+        setUserProfile(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getMessage = () => {
+    GET("/api/messages/66eebba4b15bf35dabd869f1")
+      .then((res) => {
+        setAllmessage(res.data.data);
+        console.log(Allmessage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -52,10 +77,18 @@ const ChatApp = () => {
         )}
 
         {/* Groups or Friends List */}
-        <ChatList showGroups={showGroups} isMobile={isMobile} />
+        <ChatList
+          showGroups={showGroups}
+          isMobile={isMobile}
+          Allmessage={Allmessage}
+        />
 
         {/* Chat Room */}
-        <ChatRoom isMobile={isMobile} />
+        <ChatRoom
+          isMobile={isMobile}
+          Allmessage={Allmessage}
+          UserProfile={UserProfile}
+        />
       </Grid>
     </Box>
   );
