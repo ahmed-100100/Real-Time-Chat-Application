@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AddIcCallOutlined, Close as CloseIcon } from "@mui/icons-material";
+import { AddIcCallOutlined, GroupAddOutlined } from "@mui/icons-material";
 import {
   Grid,
   Typography,
@@ -10,11 +10,9 @@ import {
   ListItemText,
   TextField,
   Button,
-  IconButton,
 } from "@mui/material";
-import { Modal } from '@mui/base/Modal';
 import PropTypes from "prop-types";
-import ComboBox from './ComboBox';  // Import the ComboBox
+import CustomModal from './CustomModal';
 
 // Dummy data for chat groups/friends
 const chatData = [
@@ -119,70 +117,51 @@ const ChatList = ({ showGroups, isMobile }) => {
         </>
       )}
 
-      {/* Button to open the modal */}
-      <Button
-        variant="contained"
-        sx={{
-          borderRadius: "50%",
-          minWidth: "50px",
-          minHeight: "50px",
-          backgroundColor: "#3A506B",
-          ":hover": {
-            color: "black",
-            backgroundColor: "#E8E8E8",
-          },
-          position: "absolute",
-          bottom: "1rem",
-          right: "1rem",
-        }}
-        onClick={handleOpenModal}
-      >
-        <AddIcCallOutlined />
-      </Button>
-
-      {/* MUI Modal */}
-      <Modal
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-        open={openModal}
-        onClose={handleCloseModal}
-      >
-        <div
-          style={{
-            color: 'white',
-            backgroundColor: '#3A506B',
-            padding: '20px',
-            borderRadius: '8px',
-            textAlign: 'center',
-            maxWidth: '500px', // Increase modal width
-            margin: 'auto',
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      {/* Conditionally render different buttons */}
+      {showGroups ? (
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "50%",
+            minWidth: "50px",
+            minHeight: "50px",
+            backgroundColor: "#3A506B",
+            ":hover": {
+              color: "black",
+              backgroundColor: "#E8E8E8",
+            },
+            position: "absolute",
+            bottom: "1rem",
+            right: "1rem",
           }}
+          onClick={handleOpenModal}
         >
-          {/* Close icon in top-right corner */}
-          <IconButton
-            onClick={handleCloseModal}
-            sx={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              color: 'white',
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+          <GroupAddOutlined />
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "50%",
+            minWidth: "50px",
+            minHeight: "50px",
+            backgroundColor: "#3A506B",
+            ":hover": {
+              color: "black",
+              backgroundColor: "#E8E8E8",
+            },
+            position: "absolute",
+            bottom: "1rem",
+            right: "1rem",
+          }}
+          onClick={handleOpenModal}
+        >
+          <AddIcCallOutlined />
+        </Button>
+      )}
 
-          <h2 id="modal-title" style={{ margin: '30px' }}>Add Friends By Email</h2>
-          
-          {/* ComboBox for email search */}
-          <ComboBox />
-
-        </div>
-      </Modal>
+      {/* Custom Modal component */}
+      <CustomModal open={openModal} handleClose={handleCloseModal} showGroups={showGroups} />
     </Grid>
   );
 };
