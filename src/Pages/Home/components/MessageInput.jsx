@@ -1,7 +1,15 @@
 import { Box, TextField, IconButton } from "@mui/material";
 import { Send } from "@mui/icons-material";
+import PropTypes from "prop-types"; // Import PropTypes for validation
 
-const MessageInput = () => {
+const MessageInput = ({ message, setMessage, onSend }) => {
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onSend();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -16,13 +24,22 @@ const MessageInput = () => {
         fullWidth
         placeholder="Type your message here..."
         variant="outlined"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress} // Add the onKeyPress handler
         sx={{ backgroundColor: "#f3f4f6", borderRadius: 0 }}
       />
-      <IconButton>
+      <IconButton onClick={onSend} disabled={!message.trim()}>
         <Send sx={{ color: "#3A506B" }} />
       </IconButton>
     </Box>
   );
+};
+
+MessageInput.propTypes = {
+  message: PropTypes.string.isRequired, // Ensure message is a required string
+  setMessage: PropTypes.func.isRequired, // Ensure setMessage is a required function
+  onSend: PropTypes.func.isRequired, // Ensure onSend is a required function
 };
 
 export default MessageInput;

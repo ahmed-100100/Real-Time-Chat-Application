@@ -12,10 +12,11 @@ import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
 import { useContext, useEffect, useState } from "react";
-import { DELETE, GET } from "../../../api/axios";
+import { DELETE, GET, POST } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
 
 const ChatRoom = ({ isMobile }) => {
+  const [newMessage, setNewMessage] = useState("");
   const [MessageId, setMessageId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const { currentChatID, loggedUser, allMessage, setAllMessage, friendsInfo } =
@@ -23,6 +24,25 @@ const ChatRoom = ({ isMobile }) => {
   const handleClick = (event, messageId) => {
     setAnchorEl(event.currentTarget);
     setMessageId(messageId);
+  };
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "") return;
+
+    const messageData = {
+      text: newMessage,
+    };
+
+    POST(`/api/messages/${currentChatID}`, messageData)
+      .then((res) => {
+        setAllMessage((prev) => ({
+          ...prev,
+          [currentChatID]: [...(prev[currentChatID] || []), res.data.data],
+        }));
+        setNewMessage("");
+      })
+      .catch((err) => {
+        console.error("Error sending message:", err);
+      });
   };
 
   useEffect(() => {
@@ -172,7 +192,11 @@ const ChatRoom = ({ isMobile }) => {
           </Box>
         ))}
       </Box>
-      <MessageInput />
+      <MessageInput
+        message={newMessage}
+        setMessage={setNewMessage}
+        onSend={handleSendMessage}
+      />
     </Grid>
   ) : (
     <Grid

@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { MainContext } from "../../../Contexts/MainContext";
 
 const Sidebar = ({ showGroups, setShowGroups }) => {
-  const { setLogged } = useContext(MainContext);
+  const { setLogged, setfriendsInfo } = useContext(MainContext);
   return (
     <Grid
       item
@@ -68,7 +68,10 @@ const Sidebar = ({ showGroups, setShowGroups }) => {
 
       <Button
         sx={{ marginTop: "auto", color: "white" }}
-        onClick={() => setLogged(false)}
+        onClick={() => {
+          setLogged(false);
+          setfriendsInfo("");
+        }}
         startIcon={<Logout />}
       >
         Logout
