@@ -10,21 +10,51 @@ import {
 } from "@mui/material";
 import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
-import PropTypes from "prop-types"; // Importing PropTypes for prop validation
+import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 import { DELETE, GET, POST } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
+import ChatMenu from "./ChatMenu";
 
-const ChatRoom = ({ isMobile }) => {
+const ChatRoom = ({ isMobile, showGroups }) => {
   const [newMessage, setNewMessage] = useState("");
   const [MessageId, setMessageId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [chatMenuAnchorEl, setChatMenuAnchorEl] = useState(null);
+
   const { currentChatID, loggedUser, allMessage, setAllMessage, friendsInfo } =
     useContext(MainContext);
+
   const handleClick = (event, messageId) => {
     setAnchorEl(event.currentTarget);
     setMessageId(messageId);
   };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setMessageId(null);
+  };
+
+  const handleChatMenuClick = (event) => {
+    setChatMenuAnchorEl(event.currentTarget);
+  };
+  const handleChatMenuClose = () => {
+    setChatMenuAnchorEl(null);
+  };
+
+  const handleClickDelete = () => {
+    DELETE(`/api/messages/delete/${MessageId}`)
+      .then((res) => {
+        const deletedMessage = res.data.data;
+        const newMessages = [...allMessage[currentChatID]].filter(
+          (message) => message._id !== deletedMessage._id
+        );
+        setAllMessage(newMessages);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleSendMessage = () => {
     if (newMessage.trim() === "") return;
 
@@ -61,24 +91,6 @@ const ChatRoom = ({ isMobile }) => {
     getMessage();
   }, [currentChatID, setAllMessage]);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMessageId(null);
-  };
-  const handleClickDelete = () => {
-    DELETE(`/api/messages/delete/${MessageId}`)
-      .then((res) => {
-        const deletedMessage = res.data.data;
-        const newMessages = [...allMessage[currentChatID]].filter(
-          (message) => message._id !== deletedMessage._id
-        );
-        setAllMessage(newMessages);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return currentChatID ? (
     <Grid
       item
@@ -91,6 +103,7 @@ const ChatRoom = ({ isMobile }) => {
         padding: 0,
       }}
     >
+      {/* Chat Header */}
       <Box
         sx={{
           display: "flex",
@@ -118,12 +131,19 @@ const ChatRoom = ({ isMobile }) => {
           <IconButton>
             <VideoCall />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleChatMenuClick}>
             <MoreVert />
           </IconButton>
+          <ChatMenu
+            anchorEl={chatMenuAnchorEl}
+            handleClick={handleChatMenuClick}
+            handleClose={handleChatMenuClose}
+            showGroups={showGroups}
+          />
         </Box>
       </Box>
 
+      {/* Chat Messages */}
       <Box
         sx={{
           flex: 1,
@@ -141,19 +161,14 @@ const ChatRoom = ({ isMobile }) => {
               display: "flex",
               flexDirection: "column",
               alignItems:
-                message.sender._id == loggedUser?._id
-                  ? "flex-end"
-                  : "flex-start",
+                message.sender._id === loggedUser?._id ? "flex-end" : "flex-start",
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {message.sender._id == loggedUser?._id ? (
-                <MoreVert
-                  onClick={(event) => handleClick(event, message._id)}
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <></>
+              {message.sender._id === loggedUser?._id && (
+                <IconButton onClick={(event) => handleClick(event, message._id)}>
+                  <MoreVert style={{ cursor: "pointer" }} />
+                </IconButton>
               )}
               <Menu
                 anchorEl={anchorEl}
@@ -162,7 +177,6 @@ const ChatRoom = ({ isMobile }) => {
               >
                 <MenuItem
                   onClick={() => {
-                    console.log(MessageId);
                     handleClickDelete();
                     handleClose();
                   }}
@@ -174,11 +188,8 @@ const ChatRoom = ({ isMobile }) => {
                 sx={{
                   padding: 1,
                   backgroundColor:
-                    message.sender._id == loggedUser?._id
-                      ? "#5BC0BE"
-                      : "#E2E8F0",
-                  color:
-                    message.sender._id == loggedUser?._id ? "black" : "#333333",
+                    message.sender._id === loggedUser?._id ? "#5BC0BE" : "#E2E8F0",
+                  color: message.sender._id === loggedUser?._id ? "black" : "#333333",
                   borderRadius: 2,
                   width: "fit-content",
                 }}
@@ -192,6 +203,8 @@ const ChatRoom = ({ isMobile }) => {
           </Box>
         ))}
       </Box>
+
+      {/* Message Input */}
       <MessageInput
         message={newMessage}
         setMessage={setNewMessage}
@@ -218,9 +231,10 @@ const ChatRoom = ({ isMobile }) => {
 };
 
 ChatRoom.propTypes = {
-  isMobile: PropTypes.bool.isRequired, // isMobile is required and must be a boolean
-  allMessage: [],
-  setAllMessage: () => {},
+  isMobile: PropTypes.bool.isRequired,
+  showGroups: PropTypes.bool.isRequired,
+  allMessage: PropTypes.array,
+  setAllMessage: PropTypes.func,
 };
 
 export default ChatRoom;

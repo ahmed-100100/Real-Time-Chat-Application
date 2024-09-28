@@ -13,7 +13,7 @@ import { useState, useEffect, useContext } from "react";
 import { GET, POST } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
 
-const CustomModal = ({ open, handleClose, showGroups }) => {
+const ChatListModal = ({ open, handleClose, showGroups }) => {
   const [email, setEmail] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -240,10 +240,10 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
 };
 
 // Adding propTypes validation
-CustomModal.propTypes = {
+ChatListModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   showGroups: PropTypes.bool.isRequired,
 };
 
-export default CustomModal;
+export default ChatListModal;

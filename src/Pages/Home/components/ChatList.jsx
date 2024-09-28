@@ -14,10 +14,9 @@ import {
   Box,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import CustomModal from "./CustomModal";
+import ChatListModal from "./ChatListModal";
 import { GET } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
-
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
   const {
@@ -217,7 +216,7 @@ const ChatList = ({ showGroups, isMobile }) => {
       )}
 
       {/* Custom Modal component */}
-      <CustomModal
+      <ChatListModal
         open={openModal}
         handleClose={handleCloseModal}
         showGroups={showGroups}

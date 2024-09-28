@@ -11,6 +11,7 @@ import ProtectedRoutes from "./Components/ProtectedRoutes";
 import AuthRoutes from "./Components/AuthRoutes";
 
 function App() {
+  localStorage.clear;
   return (
     <div>
       {/* <Navbar logOut={logOut} /> */}
