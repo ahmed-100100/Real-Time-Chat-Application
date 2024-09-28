@@ -61,6 +61,7 @@ export default function Login() {
     const { error } = validation();
     if (error) {
       setErrorMessage(error.message);
+
       return;
     } else {
       setErrorMessage("");
@@ -77,6 +78,7 @@ export default function Login() {
       })
       .catch((err) => {
         setErrorMessage(err ? err : "An error occurred");
+        setLoading(false);
       })
       .finally(() => {
         setLoading(false);
