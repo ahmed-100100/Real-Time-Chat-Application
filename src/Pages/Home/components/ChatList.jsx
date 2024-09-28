@@ -10,6 +10,7 @@ import {
   ListItemText,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import CustomModal from "./CustomModal";
@@ -18,7 +19,14 @@ import { MainContext } from "../../../Contexts/MainContext";
 
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
-  const { chatList, setChatList, setCurrentChatID } = useContext(MainContext);
+  const {
+    chatList,
+    setChatList,
+    setCurrentChatID,
+    loading,
+    setLoading,
+    loggedUser,
+  } = useContext(MainContext);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -29,17 +37,20 @@ const ChatList = ({ showGroups, isMobile }) => {
 
   useEffect(() => {
     const getChatList = async () => {
+      setLoading(true);
       await GET(
         `/api/${showGroups ? "groupChats" : "chats"}/${
           showGroups ? "userChats/all" : "userChats"
         }`
-      ).then((response) => {
-        return setChatList(response.data.data);
-      });
+      )
+        .then((response) => {
+          return setChatList(response.data.data);
+        })
+        .finally(() => setLoading(false));
     }; // Memoizing the function based on showGroups and setChatList
 
     getChatList(); // Triggering only when getChatList changes
-  }, [setChatList, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
+  }, [setChatList, setLoading, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
 
   return (
     <Grid
@@ -63,19 +74,24 @@ const ChatList = ({ showGroups, isMobile }) => {
         }}
       />
 
-      {showGroups ? (
+      {loading ? (
+        <CircularProgress />
+      ) : showGroups ? (
         <>
           <Typography variant="h6" gutterBottom>
             Groups
           </Typography>
           <List>
-            {Array.isArray(chatList) &&
+            {Array.isArray(chatList) && chatList.length != 0 ? (
               chatList.map((group) => (
                 <ListItem
-                  button
                   onClick={() => {
-                    console.log(group._id);
                     setCurrentChatID(group._id);
+                  }}
+                  sx={{
+                    cursor: "pointer",
+                    padding: "0.5rem",
+                    ":hover": { backgroundColor: "#d6d6d6" },
                   }}
                   key={group._id}
                   disablePadding
@@ -85,13 +101,16 @@ const ChatList = ({ showGroups, isMobile }) => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={group.groupName}
-                    secondary={group.lastMessage}
+                    secondary={group.lastMessage?.text ?? "No messages yet"}
                   />
                   <Typography variant="body2" color="textSecondary">
                     {group.lastTime}
                   </Typography>
                 </ListItem>
-              ))}
+              ))
+            ) : (
+              <p>No chats Yet</p>
+            )}
           </List>
         </>
       ) : (
@@ -100,14 +119,18 @@ const ChatList = ({ showGroups, isMobile }) => {
             Friends
           </Typography>
           <List>
-            {Array.isArray(chatList) &&
+            {Array.isArray(chatList) && chatList.length != 0 ? (
               chatList?.map((friend) => (
                 <ListItem
                   onClick={() => {
                     console.log(friend._id);
                     setCurrentChatID(friend._id);
                   }}
-                  button
+                  sx={{
+                    cursor: "pointer",
+                    padding: "0.5rem",
+                    ":hover": { backgroundColor: "#d6d6d6" },
+                  }}
                   key={friend._id}
                   disablePadding
                 >
@@ -115,14 +138,21 @@ const ChatList = ({ showGroups, isMobile }) => {
                     <Avatar src="/path/to/friend-image.jpg" />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={friend.name}
+                    primary={
+                      friend.participants?.find(
+                        (friend) => friend._id !== loggedUser._id
+                      ).name
+                    }
                     secondary={friend?.lastMessage?.text ?? "no messages yet"}
                   />
                   <Typography variant="body2" color="textSecondary">
                     {friend.lastTime}
                   </Typography>
                 </ListItem>
-              ))}
+              ))
+            ) : (
+              <p>No Chats Yet</p>
+            )}
           </List>
         </>
       )}

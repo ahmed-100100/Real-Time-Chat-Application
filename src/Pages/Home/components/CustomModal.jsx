@@ -9,46 +9,66 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
-import { GET } from "../../../api/axios";
+import { useState, useEffect, useContext } from "react";
+import { GET, POST } from "../../../api/axios";
+import { MainContext } from "../../../Contexts/MainContext";
 
 const CustomModal = ({ open, handleClose, showGroups }) => {
   const [email, setEmail] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedEmails, setSelectedEmails] = useState([]);
-
+  const { setChatList } = useContext(MainContext);
+  const [groupName, setGroupName] = useState("");
   useEffect(() => {
-    if (!query.trim()) {
-      setEmail([]);
-      return;
-    }
     const debounceTimeout = setTimeout(() => {
       fetchSuggestions(query);
     }, 2000);
     return () => clearTimeout(debounceTimeout);
   }, [query]);
 
+  //reset selected emails when changing between tabs or opening new one
+  useEffect(() => {
+    setSelectedEmails([]);
+  }, [showGroups]);
+
   async function fetchSuggestions(searchQuery) {
     setLoading(true);
-    const response = await GET(`/api/users/search/${searchQuery}`);
-    if (!response.data.success || response.data.data.length === 0) {
-      setEmail([]);
-      return;
-    }
-    setEmail(response.data.data);
+    await GET(`/api/users/search/${searchQuery}`)
+      .then((response) => {
+        if (response.data.success) {
+          setEmail(response.data.data);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
-  const handleSearch = (event) => {
-    setQuery(event.target.value);
-  };
-
   const handleSelect = (event, value) => {
-    setSelectedEmails(value);
+    const emails = Array.isArray(value) ? value : [value];
+    setSelectedEmails(emails);
   };
-  const handleCreateGroup = () => {
+  const handleCreateGroup = async () => {
+    if (showGroups && !groupName) return alert("Please add a group name");
+    if (selectedEmails.length == 0)
+      return alert("Please add member to chat with");
     const selectedIds = selectedEmails.map((email) => email._id);
-    console.log("Selected User IDs:", selectedIds);
+    const payload = {
+      groupName,
+      participants: selectedIds,
+    };
+    setLoading(true);
+    await POST(`/api/${showGroups ? "groupChats" : "chats"}/create`, payload)
+      .then((response) => {
+        if (response.data.success) {
+          handleClose();
+          setChatList((prev) => [...prev, response.data.data]);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -101,7 +121,8 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
             <TextField
               label="Enter Group Name"
               variant="outlined"
-              onChange={handleSearch}
+              onChange={(e) => setGroupName(e.target.value)}
+              value={groupName}
               sx={{
                 width: "100%",
                 "& .MuiOutlinedInput-root": {
@@ -129,7 +150,7 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
                   label="Add Members"
                   variant="outlined"
                   value={query}
-                  onChange={handleSearch}
+                  onChange={(e) => setQuery(e.target.value)}
                   InputProps={{
                     ...params.InputProps,
                     style: { paddingRight: 0 },
@@ -149,13 +170,14 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
             <Button
               variant="contained"
               color="inherit"
+              disabled={loading}
               sx={{
                 mt: 4,
                 alignSelf: "center",
               }}
               onClick={handleCreateGroup}
             >
-              Create Group
+              {loading ? "Creating" : "Create Group"}
             </Button>
           </Box>
         ) : (
@@ -169,6 +191,7 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
             <Autocomplete
               disablePortal
               options={email}
+              onChange={handleSelect}
               getOptionLabel={(option) => option.email}
               loading={loading}
               sx={{
@@ -181,7 +204,7 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
                   label="Enter Email"
                   variant="outlined"
                   value={query}
-                  onChange={handleSearch}
+                  onChange={(e) => setQuery(e.target.value)}
                   InputProps={{
                     ...params.InputProps,
                     style: { paddingRight: 0 },
@@ -200,12 +223,14 @@ const CustomModal = ({ open, handleClose, showGroups }) => {
             <Button
               variant="contained"
               color="inherit"
+              disabled={loading}
+              onClick={handleCreateGroup}
               sx={{
                 mt: 2,
                 alignSelf: "center",
               }}
             >
-              Add Chat
+              {loading ? "Adding" : "Create Chat"}
             </Button>
           </Box>
         )}

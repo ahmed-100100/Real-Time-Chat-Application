@@ -8,8 +8,8 @@ export function MainContextProvider({ children }) {
   let [loggedUser, setLoggedUser] = useState({});
   let [currentChatID, setCurrentChatID] = useState("");
   const [chatList, setChatList] = useState([]);
-
-  
+  let [allMessage, setAllMessage] = useState({});
+  console.log(allMessage);
   // const checkLogin = () => {
   //   setLoading(true);
   //   GET("/api/users/profile")
@@ -43,6 +43,7 @@ export function MainContextProvider({ children }) {
       value={{
         logged,
         loggedUser,
+        setLoggedUser,
         setLoading,
         loading,
         setLogged,
@@ -51,6 +52,8 @@ export function MainContextProvider({ children }) {
         setChatList,
         currentChatID,
         setCurrentChatID,
+        allMessage,
+        setAllMessage,
       }}
     >
       {children}

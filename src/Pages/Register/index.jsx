@@ -43,7 +43,8 @@ const reducer = (state, action) => {
 };
 
 export default function Register() {
-  const { setLogged, loading, setLoading } = useContext(MainContext);
+  const { setLogged, loading, setLoading, setLoggedUser } =
+    useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [clientErrors, setClientErrors] = useState([]);
   const [serverErrors, setServerErrors] = useState("");
@@ -94,6 +95,7 @@ export default function Register() {
         .then((res) => {
           if (res.data.success) {
             setLogged(true);
+            setLoggedUser(res.data.data);
           }
         })
         .catch((errMessage) => {

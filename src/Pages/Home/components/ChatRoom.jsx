@@ -11,24 +11,35 @@ import {
 import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types"; // Importing PropTypes for prop validation
-import { useState } from "react";
-import { DELETE } from "../../../api/axios";
+import { useContext, useEffect, useState } from "react";
+import { DELETE, GET } from "../../../api/axios";
+import { MainContext } from "../../../Contexts/MainContext";
 
-// Dummy messages
-const messages = [
-  { text: "Hey, what's up?", time: "9:45 PM", sentByUser: false },
-  { text: "All good! How about you?", time: "9:46 PM", sentByUser: true },
-];
-
-const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
+const ChatRoom = ({ isMobile }) => {
   const [MessageId, setMessageId] = useState(null);
-  const userId = UserProfile._id;
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const { currentChatID, loggedUser, allMessage, setAllMessage } =
+    useContext(MainContext);
   const handleClick = (event, messageId) => {
     setAnchorEl(event.currentTarget);
     setMessageId(messageId);
   };
+
+  useEffect(() => {
+    const getMessage = () => {
+      GET(`/api/messages/${currentChatID}`)
+        .then((res) => {
+          setAllMessage((prev) => ({
+            ...prev,
+            [currentChatID]: res.data.data,
+          }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getMessage();
+  }, [currentChatID, setAllMessage]);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -38,7 +49,7 @@ const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
     DELETE(`/api/messages/delete/${MessageId}`)
       .then((res) => {
         const deletedMessage = res.data.data;
-        const newMessages = [...allMessage].filter(
+        const newMessages = [...allMessage[currentChatID]].filter(
           (message) => message._id !== deletedMessage._id
         );
         setAllMessage(newMessages);
@@ -48,7 +59,7 @@ const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
       });
   };
 
-  return (
+  return currentChatID ? (
     <Grid
       item
       xs={isMobile ? 12 : 8} // Set to 12 to take the full width
@@ -103,18 +114,20 @@ const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
           overflowY: "auto",
         }}
       >
-        {allMessage.map((message, index) => (
+        {allMessage?.[currentChatID]?.map((message, index) => (
           <Box
             key={index}
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems:
-                message.sender._id == userId ? "flex-end" : "flex-start",
+                message.sender._id == loggedUser?._id
+                  ? "flex-end"
+                  : "flex-start",
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {message.sender._id == userId ? (
+              {message.sender._id == loggedUser?._id ? (
                 <MoreVert
                   onClick={(event) => handleClick(event, message._id)}
                   style={{ cursor: "pointer" }}
@@ -141,8 +154,11 @@ const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
                 sx={{
                   padding: 1,
                   backgroundColor:
-                    message.sender._id == userId ? "#5BC0BE" : "#E2E8F0",
-                  color: message.sender._id == userId ? "black" : "#333333",
+                    message.sender._id == loggedUser?._id
+                      ? "#5BC0BE"
+                      : "#E2E8F0",
+                  color:
+                    message.sender._id == loggedUser?._id ? "black" : "#333333",
                   borderRadius: 2,
                   width: "fit-content",
                 }}
@@ -158,11 +174,29 @@ const ChatRoom = ({ isMobile, allMessage, UserProfile, setAllMessage }) => {
       </Box>
       <MessageInput />
     </Grid>
+  ) : (
+    <Grid
+      item
+      xs={isMobile ? 12 : 8} // Set to 12 to take the full width
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        backgroundColor: "#FAFAFA",
+        padding: 0,
+      }}
+    >
+      <p>No chat selected</p>
+    </Grid>
   );
 };
 
 ChatRoom.propTypes = {
   isMobile: PropTypes.bool.isRequired, // isMobile is required and must be a boolean
+  allMessage: [],
+  setAllMessage: () => {},
 };
 
 export default ChatRoom;

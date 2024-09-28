@@ -1,49 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Grid, Box, IconButton, Drawer, useMediaQuery } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import Sidebar from "./components/Sidebar";
 import ChatList from "./components/ChatList";
 import ChatRoom from "./components/ChatRoom";
-import { GET } from "../../api/axios";
-import { MainContext } from "../../Contexts/MainContext";
 
 const ChatApp = () => {
   const [showGroups, setShowGroups] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  let [allMessage, setAllMessage] = useState([]);
-  const [UserProfile, setUserProfile] = useState([]);
-  const { currentChatID } = useContext(MainContext);
-
-  useEffect(() => {
-    getProfileUser();
-  }, []);
-  useEffect(() => {
-    const getMessage = () => {
-      GET(`/api/messages/${currentChatID}`)
-        .then((res) => {
-          setAllMessage(res.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    getMessage();
-  }, [currentChatID]);
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
-  };
-  const getProfileUser = async () => {
-    await GET("/api/users/profile")
-      .then((res) => {
-        setUserProfile(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -82,19 +51,10 @@ const ChatApp = () => {
         )}
 
         {/* Groups or Friends List */}
-        <ChatList
-          showGroups={showGroups}
-          isMobile={isMobile}
-          allMessage={allMessage}
-        />
+        <ChatList showGroups={showGroups} isMobile={isMobile} />
 
         {/* Chat Room */}
-        <ChatRoom
-          isMobile={isMobile}
-          allMessage={allMessage}
-          UserProfile={UserProfile}
-          setAllMessage={setAllMessage}
-        />
+        <ChatRoom isMobile={isMobile} />
       </Grid>
     </Box>
   );

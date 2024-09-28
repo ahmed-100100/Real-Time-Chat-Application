@@ -32,7 +32,8 @@ const reducer = (state, action) => {
 };
 
 export default function Login() {
-  const { setLogged, loading, setLoading } = useContext(MainContext);
+  const { setLogged, loading, setLoading, setLoggedUser } =
+    useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -73,6 +74,7 @@ export default function Login() {
     POST("/api/users/login", payload)
       .then((res) => {
         if (res.data.success) {
+          setLoggedUser(res.data.data);
           setLogged(true);
         }
       })
