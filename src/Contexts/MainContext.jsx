@@ -7,6 +7,7 @@ export function MainContextProvider({ children }) {
   let [loading, setLoading] = useState(false);
   let [loggedUser, setLoggedUser] = useState({});
   let [currentChatID, setCurrentChatID] = useState("");
+  let [friendsInfo, setfriendsInfo] = useState([]);
   const [chatList, setChatList] = useState([]);
   let [allMessage, setAllMessage] = useState({});
   console.log(allMessage);
@@ -54,6 +55,8 @@ export function MainContextProvider({ children }) {
         setCurrentChatID,
         allMessage,
         setAllMessage,
+        friendsInfo,
+        setfriendsInfo,
       }}
     >
       {children}

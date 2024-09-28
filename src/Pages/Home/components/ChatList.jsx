@@ -26,6 +26,8 @@ const ChatList = ({ showGroups, isMobile }) => {
     loading,
     setLoading,
     loggedUser,
+    setfriendsInfo,
+    friendsInfo,
   } = useContext(MainContext);
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -125,6 +127,8 @@ const ChatList = ({ showGroups, isMobile }) => {
                   onClick={() => {
                     console.log(friend._id);
                     setCurrentChatID(friend._id);
+                    setfriendsInfo(friend);
+                    console.log(friendsInfo);
                   }}
                   sx={{
                     cursor: "pointer",

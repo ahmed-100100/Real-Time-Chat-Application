@@ -7,8 +7,11 @@ import {
   Logout,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { MainContext } from "../../../Contexts/MainContext";
 
 const Sidebar = ({ showGroups, setShowGroups }) => {
+  const { setLogged } = useContext(MainContext);
   return (
     <Grid
       item
@@ -63,7 +66,11 @@ const Sidebar = ({ showGroups, setShowGroups }) => {
         Friends
       </Button>
 
-      <Button sx={{ marginTop: "auto", color: "white" }} startIcon={<Logout />}>
+      <Button
+        sx={{ marginTop: "auto", color: "white" }}
+        onClick={() => setLogged(false)}
+        startIcon={<Logout />}
+      >
         Logout
       </Button>
     </Grid>

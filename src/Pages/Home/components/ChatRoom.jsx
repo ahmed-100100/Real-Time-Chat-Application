@@ -18,7 +18,7 @@ import { MainContext } from "../../../Contexts/MainContext";
 const ChatRoom = ({ isMobile }) => {
   const [MessageId, setMessageId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const { currentChatID, loggedUser, allMessage, setAllMessage } =
+  const { currentChatID, loggedUser, allMessage, setAllMessage, friendsInfo } =
     useContext(MainContext);
   const handleClick = (event, messageId) => {
     setAnchorEl(event.currentTarget);
@@ -86,7 +86,13 @@ const ChatRoom = ({ isMobile }) => {
             src="/path/to/chat-person.jpg"
             sx={{ marginRight: 2 }}
           />
-          <Typography variant="h6">Bro</Typography>
+          <Typography variant="h6">
+            {
+              friendsInfo.participants?.find(
+                (friendsInfo) => friendsInfo._id !== loggedUser?._id
+              )?.name
+            }
+          </Typography>
           <Typography variant="body2" sx={{ marginLeft: 1, color: "#9ca3af" }}>
             Last seen 9:50 pm
           </Typography>
