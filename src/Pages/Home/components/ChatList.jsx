@@ -140,8 +140,8 @@ const ChatList = ({ showGroups, isMobile }) => {
                   <ListItemText
                     primary={
                       friend.participants?.find(
-                        (friend) => friend._id !== loggedUser._id
-                      ).name
+                        (friend) => friend._id !== loggedUser?._id
+                      )?.name
                     }
                     secondary={friend?.lastMessage?.text ?? "no messages yet"}
                   />
