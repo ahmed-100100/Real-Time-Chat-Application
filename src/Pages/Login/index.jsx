@@ -162,7 +162,14 @@ export default function Login() {
             </Grid>
             <Grid size={12}>
               {loading ? (
-                <CircularProgress />
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="100%"
+                >
+                  <CircularProgress />
+                </Box>
               ) : (
                 <Button
                   type="submit"

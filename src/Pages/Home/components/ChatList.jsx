@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import CustomModal from "./CustomModal";
@@ -77,7 +78,14 @@ const ChatList = ({ showGroups, isMobile }) => {
       />
 
       {loading ? (
-        <CircularProgress />
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="80%" // Adjust if you want it to take the full height of the parent
+        >
+          <CircularProgress />
+        </Box>
       ) : showGroups ? (
         <>
           <Typography variant="h6" gutterBottom>
