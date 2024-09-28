@@ -97,6 +97,7 @@ const ChatList = ({ showGroups, isMobile }) => {
                 <ListItem
                   onClick={() => {
                     setCurrentChatID(group._id);
+                    setfriendsInfo(group.groupName);
                   }}
                   sx={{
                     cursor: "pointer",
@@ -135,8 +136,11 @@ const ChatList = ({ showGroups, isMobile }) => {
                   onClick={() => {
                     console.log(friend._id);
                     setCurrentChatID(friend._id);
-                    setfriendsInfo(friend);
-                    console.log(friendsInfo);
+                    setfriendsInfo(
+                      friend.participants?.find(
+                        (friend) => friend._id !== loggedUser?._id
+                      )?.name
+                    );
                   }}
                   sx={{
                     cursor: "pointer",

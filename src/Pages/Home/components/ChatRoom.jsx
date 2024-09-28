@@ -86,13 +86,7 @@ const ChatRoom = ({ isMobile }) => {
             src="/path/to/chat-person.jpg"
             sx={{ marginRight: 2 }}
           />
-          <Typography variant="h6">
-            {
-              friendsInfo.participants?.find(
-                (friendsInfo) => friendsInfo._id !== loggedUser?._id
-              )?.name
-            }
-          </Typography>
+          <Typography variant="h6">{friendsInfo}</Typography>
           <Typography variant="body2" sx={{ marginLeft: 1, color: "#9ca3af" }}>
             Last seen 9:50 pm
           </Typography>
