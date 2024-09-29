@@ -29,7 +29,6 @@ const ChatRoom = ({ isMobile, showGroups }) => {
     loggedUser,
     allMessage,
     setAllMessage,
-    friendsInfo,
     setChatList,
     setSending,
   } = useContext(MainContext);
@@ -117,8 +116,13 @@ const ChatRoom = ({ isMobile, showGroups }) => {
         scrollToBottom(); // Ensure to scroll after message is sent
       });
   };
-
+  const name = currentChat.groupName
+    ? currentChat.groupName
+    : currentChat.participants?.find(
+        (participant) => participant._id !== loggedUser._id
+      ).name;
   useEffect(() => {
+    if (!currentChat._id) return;
     const getMessage = () => {
       GET(`/api/messages/${currentChat?._id}`)
         .then((res) => {
@@ -133,7 +137,6 @@ const ChatRoom = ({ isMobile, showGroups }) => {
     };
     getMessage();
   }, [currentChat, setAllMessage]);
-
   return currentChat ? (
     <Grid
       item
@@ -157,11 +160,11 @@ const ChatRoom = ({ isMobile, showGroups }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar sx={{ bgcolor: `${stringToColor(friendsInfo)}` }}>
-            {getNameInitials(friendsInfo)}
+          <Avatar sx={{ bgcolor: `${stringToColor(name)}` }}>
+            {getNameInitials(name)}
           </Avatar>
           <Typography variant="h6" sx={{ marginLeft: 1 }}>
-            {friendsInfo}
+            {name}
           </Typography>
         </Box>
         <Box>
@@ -213,6 +216,14 @@ const ChatRoom = ({ isMobile, showGroups }) => {
                 anchorEl={anchorEls[message._id]}
                 open={Boolean(anchorEls[message._id])}
                 onClose={() => handleClose(message._id)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
                 <MenuItem
                   onClick={() => {

@@ -9,7 +9,7 @@ import { stringToColor } from "../../../utils/helpers/getColorFromString";
 import { getNameInitials } from "../../../utils/helpers/getNameInitials";
 
 const Sidebar = ({ showGroups, setShowGroups }) => {
-  const { setLogged, setFriendsInfo, loggedUser } = useContext(MainContext);
+  const { setLogged, loggedUser } = useContext(MainContext);
   return (
     <Grid
       item
@@ -66,7 +66,6 @@ const Sidebar = ({ showGroups, setShowGroups }) => {
         sx={{ marginTop: "auto", color: "white" }}
         onClick={() => {
           setLogged(false);
-          setFriendsInfo("");
         }}
         startIcon={<Logout />}
       >

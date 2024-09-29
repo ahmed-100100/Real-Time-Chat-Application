@@ -23,10 +23,12 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
   const modalRef = useRef(null);
 
   useEffect(() => {
-    const debounceTimeout = setTimeout(() => {
-      fetchSuggestions(query);
-    }, 1000);
-    return () => clearTimeout(debounceTimeout);
+    if (query) {
+      const debounceTimeout = setTimeout(() => {
+        fetchSuggestions(query);
+      }, 1000);
+      return () => clearTimeout(debounceTimeout);
+    }
   }, [query]);
 
   // Reset selected emails when changing between tabs or opening a new one

@@ -28,7 +28,6 @@ const ChatList = ({ showGroups, isMobile }) => {
     setCurrentChat,
     loading,
     setLoading,
-    setFriendsInfo,
     currentChat,
     loggedUser,
   } = useContext(MainContext);
@@ -41,6 +40,7 @@ const ChatList = ({ showGroups, isMobile }) => {
   };
 
   useEffect(() => {
+    if (chatList[showGroups ? "groupChats" : "chats"]) return;
     const getChatList = async () => {
       setLoading(true);
       await GET(
@@ -58,7 +58,7 @@ const ChatList = ({ showGroups, isMobile }) => {
     }; // Memoizing the function based on showGroups and setChatList
 
     getChatList(); // Triggering only when getChatList changes
-  }, [setChatList, setLoading, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
+  }, [chatList, setChatList, setLoading, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
 
   return (
     <Grid
@@ -109,7 +109,6 @@ const ChatList = ({ showGroups, isMobile }) => {
                   <ListItem
                     onClick={() => {
                       setCurrentChat(chat);
-                      setFriendsInfo(name);
                     }}
                     sx={{
                       cursor: "pointer",

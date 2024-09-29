@@ -19,37 +19,37 @@ const ChatMenu = ({ anchorEl, handleClose, showGroups }) => {
 
   return (
     <>
-      {showGroups ? (
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={() => handleMenuItemClick("add")}>
-            Add Member
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("clear")}>
-            Clear Chat
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("exit")}>
-            Exit Group
-          </MenuItem>
-        </Menu>
-      ) : (
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem>View Profile</MenuItem>
-          {/* <MenuItem onClick={() => handleMenuItemClick("clear")}>
-            Clear Chat
-          </MenuItem> */}
-          {/* <MenuItem onClick={() => handleMenuItemClick("block")}>
-            Block User
-          </MenuItem> */}
-        </Menu>
-      )}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {showGroups
+          ? [
+              <MenuItem key="add" onClick={() => handleMenuItemClick("add")}>
+                Add Member
+              </MenuItem>,
+              <MenuItem
+                key="clear"
+                onClick={() => handleMenuItemClick("clear")}
+              >
+                Clear Chat
+              </MenuItem>,
+              <MenuItem key="exit" onClick={() => handleMenuItemClick("exit")}>
+                Exit Group
+              </MenuItem>,
+            ]
+          : [<MenuItem key="view-profile">View Profile</MenuItem>]}
+      </Menu>
+
       <ChatMenuModal
         open={modalOpen}
         handleClose={handleModalClose}
