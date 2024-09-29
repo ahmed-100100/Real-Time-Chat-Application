@@ -1,5 +1,5 @@
-import { Modal } from "@mui/base/Modal";
 import {
+  Modal,
   IconButton,
   Typography,
   Button,
@@ -9,9 +9,10 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { useState, useEffect, useContext, useRef, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { GET, POST } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
+import { produce } from "immer";
 
 const ChatListModal = ({ open, handleClose, showGroups }) => {
   const [email, setEmail] = useState([]);
@@ -20,7 +21,6 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
   const [selectedEmails, setSelectedEmails] = useState([]);
   const { setChatList } = useContext(MainContext);
   const [groupName, setGroupName] = useState("");
-  const modalRef = useRef(null);
 
   useEffect(() => {
     if (query) {
@@ -70,34 +70,20 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
       .then((response) => {
         if (response.data.success) {
           handleClose();
-          setChatList((prev) => [...prev, response.data.data]);
+          setChatList(
+            produce((value) => {
+              const chatList = value[showGroups ? "groupChats" : "chats"];
+              if (chatList) {
+                chatList.push(response.data.data);
+              }
+            })
+          );
         }
       })
       .finally(() => {
         setLoading(false);
       });
   };
-
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleClose();
-      }
-    },
-    [handleClose]
-  );
-
-  useEffect(() => {
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open, handleClickOutside]);
 
   return (
     <Modal
@@ -107,7 +93,6 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
       onClose={handleClose}
     >
       <Box
-        ref={modalRef} // Attach the ref here, to the actual modal content
         sx={{
           color: "white",
           backgroundColor: "#3A506B",

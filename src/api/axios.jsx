@@ -21,9 +21,10 @@ export async function GET(url) {
     throw error?.response?.data?.message;
   }
 }
-export async function DELETE(url) {
+export async function DELETE(url, data = {}) {
   try {
     const response = await axios.delete(`${BASE_URL + url}/`, {
+      data: data, // Add optional body data here
       withCredentials: true,
     });
     return response;

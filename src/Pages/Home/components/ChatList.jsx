@@ -45,7 +45,10 @@ const ChatList = ({ showGroups, isMobile }) => {
   };
 
   useEffect(() => {
-    if (chatList?.[showGroups ? "groupChats" : "chats"]?.length) return;
+    const chatType = showGroups ? "groupChats" : "chats";
+
+    if (chatList?.[chatType]?.length) return; // Don't fetch if chats already exist
+
     const getChatList = async () => {
       setLoading(true);
       await GET(
@@ -54,16 +57,17 @@ const ChatList = ({ showGroups, isMobile }) => {
         }`
       )
         .then((response) => {
-          return setChatList((prev) => ({
+          setChatList((prev) => ({
             ...prev,
-            [showGroups ? "groupChats" : "chats"]: response.data.data,
+            [chatType]: response.data.data, // Update the specific chat type
           }));
         })
         .finally(() => setLoading(false));
     };
 
     getChatList();
-  }, [chatList, setChatList, setLoading, showGroups]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setChatList, setLoading, showGroups]);
 
   // Filter the chats based on the search query
   const filteredChats = chatList?.[showGroups ? "groupChats" : "chats"]?.filter(
@@ -162,7 +166,9 @@ const ChatList = ({ showGroups, isMobile }) => {
                       secondary={chat.lastMessage?.text ?? "No messages yet"}
                     />
                     <Typography variant="body2" color="textSecondary">
-                      {dayjs(chat.lastMessage?.createdAt).format("hh:mm A")}
+                      {chat.lastMessage
+                        ? dayjs(chat.lastMessage?.createdAt).format("hh:mm A")
+                        : ""}
                     </Typography>
                   </ListItem>
                 );
