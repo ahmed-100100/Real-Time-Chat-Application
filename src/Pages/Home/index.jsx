@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Grid, Box, IconButton, Drawer, useMediaQuery } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import Sidebar from "./components/Sidebar";
 import ChatList from "./components/ChatList";
 import ChatRoom from "./components/ChatRoom";
+import { MainContext } from "../../Contexts/MainContext";
 
 const ChatApp = () => {
   const [showGroups, setShowGroups] = useState(false);
@@ -14,7 +15,7 @@ const ChatApp = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
+  const { mainColor } = useContext(MainContext);
   return (
     // Parent container that takes up full viewport height and centers the content
     <Box
@@ -29,15 +30,14 @@ const ChatApp = () => {
       <Box
         sx={{
           height: "90vh", // 90% of the viewport height for the chat box
-          width: "90vw", // Optional width for responsiveness
+          width: "100%",
           backgroundColor: "#FAFAFA",
           display: "flex",
           justifyContent: "center", // Center horizontally inside chat box
           alignItems: "center", // Center vertically inside chat box
-          border: "1px solid #3A506B", // Add a light border
+          border: `1px solid ${mainColor}`, // Add a light border
           borderRadius: "8px", // Rounded corners
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", // Nice shadow effect
-          maxWidth: "1200px", // Restrict the maximum width for responsiveness
           overflow: "hidden", //
         }}
       >
@@ -48,7 +48,7 @@ const ChatApp = () => {
               onClick={toggleSidebar}
               sx={{ position: "absolute", top: 10, left: 10, zIndex: 1300 }}
             >
-              <Menu sx={{ color: "#3A506B" }} />
+              <Menu sx={{ color: mainColor }} />
             </IconButton>
           )}
 
@@ -61,7 +61,7 @@ const ChatApp = () => {
               variant="temporary"
               sx={{
                 "& .MuiDrawer-paper": {
-                  backgroundColor: "#3A506B",
+                  backgroundColor: mainColor,
                   color: "white",
                   width: "240px",
                   padding: 0,

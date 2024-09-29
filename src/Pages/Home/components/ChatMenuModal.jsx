@@ -60,6 +60,7 @@ const ChatMenuModal = ({ open, handleClose, actionType }) => {
     setCurrentChat,
     loggedUser,
     setAllMessage,
+    mainColor
   } = useContext(MainContext);
   const { title, message, showEmail } = actionDetails[actionType];
 
@@ -216,7 +217,7 @@ const ChatMenuModal = ({ open, handleClose, actionType }) => {
       <Box
         sx={{
           color: "white",
-          backgroundColor: "#3A506B",
+          backgroundColor: mainColor,
           padding: "20px",
           borderRadius: "8px",
           textAlign: "center",

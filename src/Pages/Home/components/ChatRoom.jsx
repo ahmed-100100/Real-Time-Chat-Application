@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useRef } from "react";
 import {
   Box,
@@ -22,13 +23,14 @@ import { stringToColor } from "../../../utils/helpers/getColorFromString";
 import SmsFailedOutlinedIcon from "@mui/icons-material/SmsFailedOutlined";
 import { produce } from "immer";
 import UserProfileModal from "./UserProfileModal";
+import useListenMessages from "../../../hooks/useListenMessaegs";
 
 const ChatRoom = ({ isMobile, showGroups }) => {
   const [newMessage, setNewMessage] = useState("");
   const [anchorEls, setAnchorEls] = useState({});
   const [chatMenuAnchorEl, setChatMenuAnchorEl] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
-
+  useListenMessages();
   const {
     currentChat,
     loggedUser,
@@ -36,6 +38,7 @@ const ChatRoom = ({ isMobile, showGroups }) => {
     setAllMessage,
     setChatList,
     setSending,
+    mainColor
   } = useContext(MainContext);
 
   // Ref to the last message element
@@ -94,6 +97,7 @@ const ChatRoom = ({ isMobile, showGroups }) => {
     const messageData = {
       text: newMessage,
     };
+
     setNewMessage("");
     setSending(true);
     POST(`/api/messages/${currentChat?._id}`, messageData)
@@ -209,6 +213,16 @@ const ChatRoom = ({ isMobile, showGroups }) => {
             flexDirection: "column",
             gap: 2,
             overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "5px", // Width of the scrollbar
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "transparent", // Background of the scrollbar track
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: mainColor, // Scrollbar thumb color
+              borderRadius: "10px", // Rounded corners for the thumb
+            },
           }}
         >
           {allMessage?.[currentChat?._id]?.map((message, index, arr) => (
@@ -259,7 +273,7 @@ const ChatRoom = ({ isMobile, showGroups }) => {
                     padding: 1,
                     backgroundColor:
                       message.sender._id === loggedUser?._id
-                        ? "#3A506B"
+                        ? mainColor
                         : "#E2E8F0",
                     color:
                       message.sender._id === loggedUser?._id

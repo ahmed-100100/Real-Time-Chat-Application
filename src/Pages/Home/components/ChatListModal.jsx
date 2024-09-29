@@ -19,7 +19,7 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedEmails, setSelectedEmails] = useState([]);
-  const { setChatList } = useContext(MainContext);
+  const { setChatList,mainColor } = useContext(MainContext);
   const [groupName, setGroupName] = useState("");
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
       <Box
         sx={{
           color: "white",
-          backgroundColor: "#3A506B",
+          backgroundColor: mainColor,
           padding: "20px",
           borderRadius: "8px",
           textAlign: "center",

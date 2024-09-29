@@ -11,7 +11,7 @@ const MessageInput = ({ message, setMessage, onSend }) => {
       onSend();
     }
   };
-  const { sending } = useContext(MainContext);
+  const { sending,mainColor } = useContext(MainContext);
   return (
     <Box
       sx={{
@@ -23,16 +23,15 @@ const MessageInput = ({ message, setMessage, onSend }) => {
       }}
     >
       <TextField
-        fullWidth
         placeholder="Type your message here..."
         variant="outlined"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyPress={!sending ? handleKeyPress : null} // Add the onKeyPress handler
-        sx={{ backgroundColor: "#f3f4f6", borderRadius: 0 }}
+        sx={{ backgroundColor: "#f3f4f6", borderRadius: 0, width: "100%" }}
       />
       <IconButton onClick={!sending ? onSend : null} disabled={!message.trim()}>
-        <Send sx={{ color: "#3A506B" }} />
+        <Send sx={{ color: mainColor }} />
       </IconButton>
     </Box>
   );

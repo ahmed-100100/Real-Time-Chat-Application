@@ -3,8 +3,11 @@ import { Modal, Box, Typography, IconButton, Avatar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getNameInitials } from "../../../../utils/helpers/getNameInitials";
 import { stringToColor } from "../../../../utils/helpers/getColorFromString";
+import { useContext } from "react";
+import { MainContext } from "../../../../Contexts/MainContext";
 
 const UserProfileModal = ({ open, handleClose, user }) => {
+  const { mainColor } = useContext(MainContext);
   return (
     <Modal
       aria-labelledby="modal-title"
@@ -15,7 +18,7 @@ const UserProfileModal = ({ open, handleClose, user }) => {
       <Box
         sx={{
           color: "white",
-          backgroundColor: "#3A506B",
+          backgroundColor: mainColor,
           padding: "20px",
           borderRadius: "8px",
           textAlign: "center",
@@ -42,7 +45,7 @@ const UserProfileModal = ({ open, handleClose, user }) => {
 
         <Avatar
           sx={{
-            width: 80,  
+            width: 80,
             height: 80,
             margin: "20px auto",
             bgcolor: `${stringToColor(user.name)}`,

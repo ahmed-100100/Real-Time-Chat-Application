@@ -32,7 +32,7 @@ const reducer = (state, action) => {
 };
 
 export default function Login() {
-  const { setLogged, loading, setLoading, setLoggedUser } =
+  const { setLogged, loading, setLoading, setLoggedUser, mainColor } =
     useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [errorMessage, setErrorMessage] = useState("");
@@ -57,7 +57,6 @@ export default function Login() {
   }
 
   function handleSubmit(e) {
-    setLoading(true);
     e.preventDefault();
     const { error } = validation();
     if (error) {
@@ -71,16 +70,16 @@ export default function Login() {
       email: state.email,
       password: state.password,
     };
+
+    setLogged(true);
     POST("/api/users/login", payload)
       .then((res) => {
         if (res.data.success) {
           setLoggedUser(res.data.data);
-          setLogged(true);
         }
       })
       .catch((err) => {
         setErrorMessage(err ? err : "An error occurred");
-        setLoading(false);
       })
       .finally(() => {
         setLoading(false);
@@ -124,7 +123,6 @@ export default function Login() {
               <TextField
                 label="Email Address"
                 variant="outlined"
-                fullWidth
                 value={state.email}
                 onChange={(event) =>
                   dispatch({ type: "email", payload: event.target.value })
@@ -132,6 +130,7 @@ export default function Login() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
@@ -140,7 +139,6 @@ export default function Login() {
                 label="Password"
                 variant="outlined"
                 type="password"
-                fullWidth
                 value={state.password}
                 onChange={(event) =>
                   dispatch({ type: "password", payload: event.target.value })
@@ -148,13 +146,14 @@ export default function Login() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
             {/* <Grid size={12}>
               <Box display="flex" justifyContent="space-between">
                 <Link to="/forgot-password">
-                  <Typography variant="body2" color="#3A506B">
+                  <Typography variant="body2" color=mainColor>
                     Forgot Password?
                   </Typography>
                 </Link>
@@ -173,14 +172,14 @@ export default function Login() {
               ) : (
                 <Button
                   type="submit"
-                  fullWidth
                   variant="contained"
                   sx={{
-                    backgroundColor: "#3A506B", // Primary color for the button
+                    backgroundColor: mainColor, // Primary color for the button
                     color: "white",
                     "&:hover": {
                       backgroundColor: "#5BC0BE", // Accent color on hover
                     },
+                    width: "100%",
                   }}
                   size="large"
                 >
@@ -201,12 +200,13 @@ export default function Login() {
           >
             <Grid size={6}>
               <Button
-                fullWidth
                 variant="outlined"
                 startIcon={<FontAwesomeIcon icon={faGoogle} />}
                 sx={{
                   color: "#333333", // Text color
-                  borderColor: "#3A506B", // Primary border color
+                  borderColor: mainColor, // Primary border color
+                  width: "100%",
+
                   "&:hover": {
                     backgroundColor: "#5BC0BE", // Soft green background on hover
                     color: "white",
@@ -218,12 +218,12 @@ export default function Login() {
             </Grid>
             <Grid size={6}>
               <Button
-                fullWidth
                 variant="outlined"
                 startIcon={<FontAwesomeIcon icon={faFacebook} />}
                 sx={{
                   color: "#333333", // Text color
-                  borderColor: "#3A506B", // Primary border color
+                  borderColor: mainColor, // Primary border color
+                  width: "100%",
                   "&:hover": {
                     backgroundColor: "#5BC0BE", // Soft green background on hover
                     color: "white",
@@ -237,7 +237,7 @@ export default function Login() {
           <Box mt={3} textAlign="center">
             <Typography color="#333333">
               Don&apos;t have an account?{" "}
-              <Link to="/register" style={{ color: "#3A506B" }}>
+              <Link to="/register" style={{ color: mainColor }}>
                 Register
               </Link>
             </Typography>

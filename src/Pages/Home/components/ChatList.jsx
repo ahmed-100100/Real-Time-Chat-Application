@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+
   const {
     chatList,
     setChatList,
@@ -34,6 +35,7 @@ const ChatList = ({ showGroups, isMobile }) => {
     setLoading,
     currentChat,
     loggedUser,
+    mainColor
   } = useContext(MainContext);
 
   const handleOpenModal = () => {
@@ -90,27 +92,29 @@ const ChatList = ({ showGroups, isMobile }) => {
         height: "100%",
         backgroundColor: "#E8E8E8",
         position: "relative",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Paper
         component="form"
-        fullWidth
         sx={{
           p: "0.5rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           mb: "1rem",
+          width: "100%",
         }}
       >
         <InputBase
-          fullWidth
           placeholder="Search"
           value={searchQuery} // Controlled input
           onChange={(e) => setSearchQuery(e.target.value)} // Update the searchQuery state
           sx={{
             backgroundColor: "#ffffff",
             borderRadius: 2,
+            width: "100%",
           }}
         />
         <SearchIcon sx={{ color: "#d6d6d6" }} />
@@ -130,7 +134,23 @@ const ChatList = ({ showGroups, isMobile }) => {
           <Typography variant="h6" gutterBottom>
             {showGroups ? "Groups" : "Chats"}
           </Typography>
-          <List>
+          <List
+            sx={{
+              overflow: "auto",
+              flex: 1,
+              flexGrow: 1,
+              "&::-webkit-scrollbar": {
+                width: "5px", // Width of the scrollbar
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "transparent", // Background of the scrollbar track
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: mainColor, // Scrollbar thumb color
+                borderRadius: "10px", // Rounded corners for the thumb
+              },
+            }}
+          >
             {Array.isArray(filteredChats) && filteredChats.length > 0 ? (
               filteredChats.map((chat) => {
                 const name = showGroups
@@ -188,7 +208,7 @@ const ChatList = ({ showGroups, isMobile }) => {
           minWidth: "50px",
           minHeight: "50px",
           borderRadius: "50%", // Ensures it's round
-          backgroundColor: "#3A506B",
+          backgroundColor: mainColor,
           display: "flex", // Center the icon inside
           justifyContent: "center", // Horizontally center the icon
           alignItems: "center", // Vertically center the icon

@@ -1,44 +1,38 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { POST } from "../api/axios";
+
 export let MainContext = createContext("");
+
 export function MainContextProvider({ children }) {
-  let [logged, setLogged] = useState(false);
-  let [loading, setLoading] = useState(false);
-  let [sending, setSending] = useState(false);
-  let [loggedUser, setLoggedUser] = useState({});
-  let [currentChat, setCurrentChat] = useState("");
-  let [friendsInfo, setFriendsInfo] = useState([]);
+  const [mainColor, setMainColor] = useState("#3A506B");
+  const [logged, setLogged] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [loggedUser, setLoggedUser] = useState({});
+  const [currentChat, setCurrentChat] = useState("");
+  const [friendsInfo, setFriendsInfo] = useState([]);
   const [chatList, setChatList] = useState([]);
-  let [allMessage, setAllMessage] = useState({});
-  // const checkLogin = () => {
-  //   setLoading(true);
-  //   GET("/api/users/profile")
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         setLoggedUser(response.data.data);
-  //         setLogged(true);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setLoggedUser({});
-  //       setLogged(false);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   checkLogin();
-  // }, [logged]);
-
+  const [allMessage, setAllMessage] = useState({});
+  const socket = useRef(null);
   function logOut() {
     POST("/api/users/logout", {}).finally(() => {
       setLoggedUser({});
       setLogged(false);
     });
   }
+  useEffect(() => {
+    const mainColorFromLS = localStorage.getItem("mainColor");
+    if (mainColorFromLS) {
+      setMainColor(mainColorFromLS);
+    }
+  }, []);
+
+  const handleChangeMainColor = (value) => {
+    setMainColor(value);
+    localStorage.setItem("mainColor", value);
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -59,12 +53,16 @@ export function MainContextProvider({ children }) {
         setAllMessage,
         friendsInfo,
         setFriendsInfo,
+        socket,
+        mainColor,
+        handleChangeMainColor,
       }}
     >
       {children}
     </MainContext.Provider>
   );
 }
+
 MainContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

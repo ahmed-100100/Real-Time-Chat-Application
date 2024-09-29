@@ -43,7 +43,7 @@ const reducer = (state, action) => {
 };
 
 export default function Register() {
-  const { setLogged, loading, setLoading, setLoggedUser } =
+  const { setLogged, loading, setLoading, setLoggedUser, mainColor } =
     useContext(MainContext);
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [clientErrors, setClientErrors] = useState([]);
@@ -51,7 +51,12 @@ export default function Register() {
 
   function validateData() {
     const schema = Joi.object({
-      name: Joi.string().alphanum().min(3).max(30).required(),
+      name: Joi.string()
+        .trim()
+        .pattern(/^[a-zA-Z\s]+$/) // Allows only alphabetic characters and spaces
+        .min(3)
+        .max(30)
+        .required(),
       email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
         .required(),
@@ -77,7 +82,6 @@ export default function Register() {
   }
 
   function handleSubmit(e) {
-    setLoading(true);
     e.preventDefault();
     const { error } = validateData();
     if (error) {
@@ -155,7 +159,6 @@ export default function Register() {
               <TextField
                 label="Full Name"
                 variant="outlined"
-                fullWidth
                 value={state.name}
                 onChange={(event) =>
                   dispatch({ type: "name", payload: event.target.value })
@@ -163,6 +166,7 @@ export default function Register() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
@@ -170,7 +174,6 @@ export default function Register() {
               <TextField
                 label="Email Address"
                 variant="outlined"
-                fullWidth
                 value={state.email}
                 onChange={(event) =>
                   dispatch({ type: "email", payload: event.target.value })
@@ -178,6 +181,7 @@ export default function Register() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
@@ -186,7 +190,6 @@ export default function Register() {
                 label="Password"
                 variant="outlined"
                 type="password"
-                fullWidth
                 value={state.password}
                 onChange={(event) =>
                   dispatch({ type: "password", payload: event.target.value })
@@ -194,6 +197,7 @@ export default function Register() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
@@ -202,7 +206,6 @@ export default function Register() {
                 label="Repeat Password"
                 variant="outlined"
                 type="password"
-                fullWidth
                 value={state.repeatPassword}
                 onChange={(event) =>
                   dispatch({
@@ -213,6 +216,7 @@ export default function Register() {
                 sx={{
                   backgroundColor: "#E8E8E8", // Light gray background for input
                   borderRadius: "4px",
+                  width: "100%",
                 }}
               />
             </Grid>
@@ -224,13 +228,13 @@ export default function Register() {
                     onChange={(event) =>
                       dispatch({ type: "agree", payload: event.target.checked })
                     }
-                    sx={{ color: "#3A506B" }} // Primary color for checkbox
+                    sx={{ color: mainColor }} // Primary color for checkbox
                   />
                 }
                 label={
                   <>
                     I agree with{" "}
-                    <Link to="#" style={{ color: "#3A506B" }}>
+                    <Link to="#" style={{ color: mainColor }}>
                       Privacy policy & terms
                     </Link>
                   </>
@@ -243,14 +247,14 @@ export default function Register() {
               ) : (
                 <Button
                   type="submit"
-                  fullWidth
                   variant="contained"
                   sx={{
-                    backgroundColor: "#3A506B", // Primary color for button
+                    backgroundColor: mainColor, // Primary color for button
                     color: "white",
                     "&:hover": {
                       backgroundColor: "#5BC0BE", // Accent color on hover
                     },
+                    width: "100%",
                   }}
                   size="large"
                 >
@@ -271,16 +275,16 @@ export default function Register() {
           >
             <Grid size={6}>
               <Button
-                fullWidth
                 variant="outlined"
                 startIcon={<FontAwesomeIcon icon={faGoogle} />}
                 sx={{
                   color: "#333333", // Text color
-                  borderColor: "#3A506B", // Primary border color
+                  borderColor: mainColor, // Primary border color
                   "&:hover": {
                     backgroundColor: "#5BC0BE", // Soft green background on hover
                     color: "white",
                   },
+                  width: "100%",
                 }}
               >
                 Google
@@ -288,16 +292,16 @@ export default function Register() {
             </Grid>
             <Grid size={6}>
               <Button
-                fullWidth
                 variant="outlined"
                 startIcon={<FontAwesomeIcon icon={faFacebook} />}
                 sx={{
                   color: "#333333", // Text color
-                  borderColor: "#3A506B", // Primary border color
+                  borderColor: mainColor, // Primary border color
                   "&:hover": {
                     backgroundColor: "#5BC0BE", // Soft green background on hover
                     color: "white",
                   },
+                  width: "100%",
                 }}
               >
                 Facebook
@@ -307,7 +311,7 @@ export default function Register() {
           <Box mt={3} textAlign="center">
             <Typography color="#333333">
               Already have an account?{" "}
-              <Link to="/" style={{ color: "#3A506B" }}>
+              <Link to="/" style={{ color: mainColor }}>
                 Login
               </Link>
             </Typography>
