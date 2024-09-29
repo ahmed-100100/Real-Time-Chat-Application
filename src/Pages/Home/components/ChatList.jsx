@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AddIcCallOutlined, GroupAddOutlined } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import {
   Grid,
   Typography,
@@ -17,17 +17,20 @@ import PropTypes from "prop-types";
 import ChatListModal from "./ChatListModal";
 import { GET } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
+import dayjs from "dayjs";
+import { getNameInitials } from "../../../utils/helpers/getNameInitials";
+import { stringToColor } from "../../../utils/helpers/getColorFromString";
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
   const {
     chatList,
     setChatList,
-    setCurrentChatID,
+    setCurrentChat,
     loading,
     setLoading,
+    setFriendsInfo,
+    currentChat,
     loggedUser,
-    setfriendsInfo,
-    friendsInfo,
   } = useContext(MainContext);
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -46,7 +49,10 @@ const ChatList = ({ showGroups, isMobile }) => {
         }`
       )
         .then((response) => {
-          return setChatList(response.data.data);
+          return setChatList((prev) => ({
+            ...prev,
+            [showGroups ? "groupChats" : "chats"]: response.data.data,
+          }));
         })
         .finally(() => setLoading(false));
     }; // Memoizing the function based on showGroups and setChatList
@@ -85,135 +91,89 @@ const ChatList = ({ showGroups, isMobile }) => {
         >
           <CircularProgress />
         </Box>
-      ) : showGroups ? (
+      ) : (
         <>
           <Typography variant="h6" gutterBottom>
             Groups
           </Typography>
           <List>
-            {Array.isArray(chatList) && chatList.length != 0 ? (
-              chatList.map((group) => (
-                <ListItem
-                  onClick={() => {
-                    setCurrentChatID(group._id);
-                    setfriendsInfo(group.groupName);
-                  }}
-                  sx={{
-                    cursor: "pointer",
-                    padding: "0.5rem",
-                    ":hover": { backgroundColor: "#d6d6d6" },
-                  }}
-                  key={group._id}
-                  disablePadding
-                >
-                  <ListItemAvatar>
-                    <Avatar src="/path/to/group-image.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={group.groupName}
-                    secondary={group.lastMessage?.text ?? "No messages yet"}
-                  />
-                  <Typography variant="body2" color="textSecondary">
-                    {group.lastTime}
-                  </Typography>
-                </ListItem>
-              ))
+            {Array.isArray(chatList?.[showGroups ? "groupChats" : "chats"]) &&
+            chatList?.[showGroups ? "groupChats" : "chats"]?.length != 0 ? (
+              chatList?.[showGroups ? "groupChats" : "chats"]?.map((chat) => {
+                const name = showGroups
+                  ? chat.groupName
+                  : chat.participants?.find(
+                      (participant) => participant._id !== loggedUser._id
+                    ).name;
+                return (
+                  <ListItem
+                    onClick={() => {
+                      setCurrentChat(chat);
+                      setFriendsInfo(name);
+                    }}
+                    sx={{
+                      cursor: "pointer",
+                      padding: "0 0.5rem",
+                      ":hover": { backgroundColor: "#d6d6d6" },
+                      bgcolor: `${currentChat._id == chat._id && "#d6d6d6"}`,
+                    }}
+                    key={chat._id}
+                    disablePadding
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          bgcolor: `${stringToColor(name)}`,
+                        }}
+                      >
+                        {getNameInitials(name)}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={name}
+                      secondary={chat.lastMessage?.text ?? "No messages yet"}
+                    />
+                    <Typography variant="body2" color="textSecondary">
+                      {dayjs(chat.lastMessage?.createdAt).format("hh:mm A")}
+                    </Typography>
+                  </ListItem>
+                );
+              })
             ) : (
               <p>No chats Yet</p>
-            )}
-          </List>
-        </>
-      ) : (
-        <>
-          <Typography variant="h6" gutterBottom>
-            Friends
-          </Typography>
-          <List>
-            {Array.isArray(chatList) && chatList.length != 0 ? (
-              chatList?.map((friend) => (
-                <ListItem
-                  onClick={() => {
-                    console.log(friend._id);
-                    setCurrentChatID(friend._id);
-                    setfriendsInfo(
-                      friend.participants?.find(
-                        (friend) => friend._id !== loggedUser?._id
-                      )?.name
-                    );
-                  }}
-                  sx={{
-                    cursor: "pointer",
-                    padding: "0.5rem",
-                    ":hover": { backgroundColor: "#d6d6d6" },
-                  }}
-                  key={friend._id}
-                  disablePadding
-                >
-                  <ListItemAvatar>
-                    <Avatar src="/path/to/friend-image.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      friend.participants?.find(
-                        (friend) => friend._id !== loggedUser?._id
-                      )?.name
-                    }
-                    secondary={friend?.lastMessage?.text ?? "no messages yet"}
-                  />
-                  <Typography variant="body2" color="textSecondary">
-                    {friend.lastTime}
-                  </Typography>
-                </ListItem>
-              ))
-            ) : (
-              <p>No Chats Yet</p>
             )}
           </List>
         </>
       )}
 
       {/* Conditionally render different buttons */}
-      {showGroups ? (
-        <Button
-          variant="contained"
-          sx={{
-            borderRadius: "50%",
-            minWidth: "50px",
-            minHeight: "50px",
-            backgroundColor: "#3A506B",
-            ":hover": {
-              color: "black",
-              backgroundColor: "#E8E8E8",
-            },
-            position: "absolute",
-            bottom: "1rem",
-            right: "1rem",
-          }}
-          onClick={handleOpenModal}
-        >
-          <GroupAddOutlined />
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          sx={{
-            borderRadius: "50%",
-            minWidth: "50px",
-            minHeight: "50px",
-            backgroundColor: "#3A506B",
-            ":hover": {
-              color: "black",
-              backgroundColor: "#E8E8E8",
-            },
-            position: "absolute",
-            bottom: "1rem",
-            right: "1rem",
-          }}
-          onClick={handleOpenModal}
-        >
-          <AddIcCallOutlined />
-        </Button>
-      )}
+
+      <Button
+        variant="contained"
+        sx={{
+          width: "50px", // Ensure width and height are equal
+          height: "50px",
+          minWidth: "50px", // Prevent the button from shrinking
+          minHeight: "50px",
+          borderRadius: "50%", // Ensures it's round
+          backgroundColor: "#3A506B",
+          display: "flex", // Center the icon inside
+          justifyContent: "center", // Horizontally center the icon
+          alignItems: "center", // Vertically center the icon
+          boxShadow: "0px 1px 10px rgba(0, 0, 0, 0.2)", // Floating shadow effect
+          ":hover": {
+            color: "black",
+            backgroundColor: "#E8E8E8",
+            boxShadow: "0px 1px 10px rgba(0, 0, 0, 0.3)", // Slightly stronger shadow on hover
+          },
+          position: "absolute",
+          bottom: "1rem",
+          right: "1rem",
+        }}
+        onClick={handleOpenModal}
+      >
+        <Add />
+      </Button>
 
       {/* Custom Modal component */}
       <ChatListModal

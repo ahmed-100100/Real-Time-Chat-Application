@@ -1,17 +1,15 @@
 import { Avatar, IconButton, Button, Grid } from "@mui/material";
-import {
-  Home,
-  Chat,
-  Notifications,
-  Settings,
-  Logout,
-} from "@mui/icons-material";
+import { Settings, Logout } from "@mui/icons-material";
+import GroupsIcon from "@mui/icons-material/Groups";
+import ChatIcon from "@mui/icons-material/Chat";
 import PropTypes from "prop-types";
 import { useContext } from "react";
 import { MainContext } from "../../../Contexts/MainContext";
+import { stringToColor } from "../../../utils/helpers/getColorFromString";
+import { getNameInitials } from "../../../utils/helpers/getNameInitials";
 
 const Sidebar = ({ showGroups, setShowGroups }) => {
-  const { setLogged, setfriendsInfo } = useContext(MainContext);
+  const { setLogged, setFriendsInfo, loggedUser } = useContext(MainContext);
   return (
     <Grid
       item
@@ -27,35 +25,17 @@ const Sidebar = ({ showGroups, setShowGroups }) => {
       }}
     >
       <Avatar
-        alt="User Profile"
-        src="/path/to/image.jpg"
-        sx={{ width: 60, height: 60, marginBottom: 4, marginTop: 2 }}
-      />
-
-      <IconButton>
-        <Home sx={{ color: "white" }} />
-      </IconButton>
-      <IconButton>
-        <Chat sx={{ color: "white" }} />
-      </IconButton>
-      <IconButton>
-        <Notifications sx={{ color: "white" }} />
-      </IconButton>
-      <IconButton>
-        <Settings sx={{ color: "white" }} />
-      </IconButton>
-
-      <Button
-        sx={
-          showGroups
-            ? { marginTop: 2, color: "black", backgroundColor: "white" }
-            : { marginTop: 2, color: "white" }
-        }
-        onClick={() => setShowGroups(true)}
+        sx={{
+          width: 60,
+          height: 60,
+          marginBottom: 4,
+          marginTop: 2,
+          bgcolor: `${stringToColor(loggedUser.name)}`,
+        }}
       >
-        Groups
-      </Button>
-      <Button
+        {getNameInitials(loggedUser.name)}
+      </Avatar>
+      <IconButton
         sx={
           showGroups
             ? { color: "white" }
@@ -63,14 +43,30 @@ const Sidebar = ({ showGroups, setShowGroups }) => {
         }
         onClick={() => setShowGroups(false)}
       >
-        Friends
-      </Button>
+        <ChatIcon sx={showGroups ? { color: "white" } : { color: "#3A506B" }} />
+      </IconButton>
+      <IconButton
+        sx={
+          showGroups
+            ? { color: "black", backgroundColor: "white" }
+            : { color: "white" }
+        }
+        onClick={() => setShowGroups(true)}
+      >
+        <GroupsIcon
+          sx={showGroups ? { color: "#3A506B" } : { color: "white" }}
+        />
+      </IconButton>
+
+      <IconButton>
+        <Settings sx={{ color: "white" }} />
+      </IconButton>
 
       <Button
         sx={{ marginTop: "auto", color: "white" }}
         onClick={() => {
           setLogged(false);
-          setfriendsInfo("");
+          setFriendsInfo("");
         }}
         startIcon={<Logout />}
       >

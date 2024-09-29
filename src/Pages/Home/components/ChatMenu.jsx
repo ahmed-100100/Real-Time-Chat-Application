@@ -20,7 +20,11 @@ const ChatMenu = ({ anchorEl, handleClose, showGroups }) => {
   return (
     <>
       {showGroups ? (
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
           <MenuItem onClick={() => handleMenuItemClick("add")}>
             Add Member
           </MenuItem>
@@ -32,16 +36,18 @@ const ChatMenu = ({ anchorEl, handleClose, showGroups }) => {
           </MenuItem>
         </Menu>
       ) : (
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-          <MenuItem onClick={""}>
-            View Profile
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("clear")}>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem>View Profile</MenuItem>
+          {/* <MenuItem onClick={() => handleMenuItemClick("clear")}>
             Clear Chat
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("block")}>
+          </MenuItem> */}
+          {/* <MenuItem onClick={() => handleMenuItemClick("block")}>
             Block User
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
       )}
       <ChatMenuModal

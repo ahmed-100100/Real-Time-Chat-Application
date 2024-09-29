@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Box,
   Grid,
@@ -8,47 +9,75 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Phone, VideoCall, MoreVert } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import MessageInput from "./MessageInput";
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 import { DELETE, GET, POST } from "../../../api/axios";
 import { MainContext } from "../../../Contexts/MainContext";
 import ChatMenu from "./ChatMenu";
+import dayjs from "dayjs";
+import { getNameInitials } from "../../../utils/helpers/getNameInitials";
+import { stringToColor } from "../../../utils/helpers/getColorFromString";
 
 const ChatRoom = ({ isMobile, showGroups }) => {
   const [newMessage, setNewMessage] = useState("");
-  const [MessageId, setMessageId] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEls, setAnchorEls] = useState({});
   const [chatMenuAnchorEl, setChatMenuAnchorEl] = useState(null);
+  const {
+    currentChat,
+    loggedUser,
+    allMessage,
+    setAllMessage,
+    friendsInfo,
+    setChatList,
+    setSending,
+  } = useContext(MainContext);
 
-  const { currentChatID, loggedUser, allMessage, setAllMessage, friendsInfo } =
-    useContext(MainContext);
+  // Ref to the last message element
+  const lastMessageRef = useRef(null);
+
+  // Function to scroll to the last message
+  const scrollToBottom = () => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to bottom when messages change
+  }, [allMessage, currentChat]);
 
   const handleClick = (event, messageId) => {
-    setAnchorEl(event.currentTarget);
-    setMessageId(messageId);
+    setAnchorEls((prev) => ({ ...prev, [messageId]: event.currentTarget }));
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMessageId(null);
+
+  const handleClose = (messageId) => {
+    setAnchorEls((prev) => ({ ...prev, [messageId]: null }));
   };
 
   const handleChatMenuClick = (event) => {
     setChatMenuAnchorEl(event.currentTarget);
   };
+
   const handleChatMenuClose = () => {
     setChatMenuAnchorEl(null);
   };
 
-  const handleClickDelete = () => {
-    DELETE(`/api/messages/delete/${MessageId}`)
+  const handleClickDelete = (messageId) => {
+    DELETE(`/api/messages/delete/${messageId}`)
       .then((res) => {
         const deletedMessage = res.data.data;
-        const newMessages = [...allMessage[currentChatID]].filter(
-          (message) => message._id !== deletedMessage._id
-        );
-        setAllMessage(newMessages);
+        setAllMessage((prevMessages) => {
+          const currentChatMessages = prevMessages[currentChat?._id] || [];
+          const updatedMessages = currentChatMessages.filter(
+            (message) => message._id !== deletedMessage._id
+          );
+          return {
+            ...prevMessages,
+            [currentChat?._id]: updatedMessages,
+          };
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -61,27 +90,41 @@ const ChatRoom = ({ isMobile, showGroups }) => {
     const messageData = {
       text: newMessage,
     };
-
-    POST(`/api/messages/${currentChatID}`, messageData)
+    setNewMessage("");
+    setSending(true);
+    POST(`/api/messages/${currentChat?._id}`, messageData)
       .then((res) => {
         setAllMessage((prev) => ({
           ...prev,
-          [currentChatID]: [...(prev[currentChatID] || []), res.data.data],
+          [currentChat?._id]: [
+            ...(prev[currentChat?._id] || []),
+            res.data.data,
+          ],
         }));
-        setNewMessage("");
+        setChatList((prev) => {
+          let newList = prev;
+          if (newList[newList.indexOf(currentChat)]) {
+            newList[newList.indexOf(currentChat)].lastMessage = res.data.data;
+            return newList;
+          }
+        });
       })
       .catch((err) => {
         console.error("Error sending message:", err);
+      })
+      .finally(() => {
+        setSending(false);
+        scrollToBottom(); // Ensure to scroll after message is sent
       });
   };
 
   useEffect(() => {
     const getMessage = () => {
-      GET(`/api/messages/${currentChatID}`)
+      GET(`/api/messages/${currentChat?._id}`)
         .then((res) => {
           setAllMessage((prev) => ({
             ...prev,
-            [currentChatID]: res.data.data,
+            [currentChat?._id]: res.data.data,
           }));
         })
         .catch((err) => {
@@ -89,12 +132,12 @@ const ChatRoom = ({ isMobile, showGroups }) => {
         });
     };
     getMessage();
-  }, [currentChatID, setAllMessage]);
+  }, [currentChat, setAllMessage]);
 
-  return currentChatID ? (
+  return currentChat ? (
     <Grid
       item
-      xs={isMobile ? 12 : 8} // Set to 12 to take the full width
+      xs={isMobile ? 12 : 8}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -114,23 +157,14 @@ const ChatRoom = ({ isMobile, showGroups }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar
-            alt="Chat Person"
-            src="/path/to/chat-person.jpg"
-            sx={{ marginRight: 2 }}
-          />
-          <Typography variant="h6">{friendsInfo}</Typography>
-          <Typography variant="body2" sx={{ marginLeft: 1, color: "#9ca3af" }}>
-            Last seen 9:50 pm
+          <Avatar sx={{ bgcolor: `${stringToColor(friendsInfo)}` }}>
+            {getNameInitials(friendsInfo)}
+          </Avatar>
+          <Typography variant="h6" sx={{ marginLeft: 1 }}>
+            {friendsInfo}
           </Typography>
         </Box>
         <Box>
-          <IconButton>
-            <Phone />
-          </IconButton>
-          <IconButton>
-            <VideoCall />
-          </IconButton>
           <IconButton onClick={handleChatMenuClick}>
             <MoreVert />
           </IconButton>
@@ -154,31 +188,36 @@ const ChatRoom = ({ isMobile, showGroups }) => {
           overflowY: "auto",
         }}
       >
-        {allMessage?.[currentChatID]?.map((message, index) => (
+        {allMessage?.[currentChat?._id]?.map((message, index, arr) => (
           <Box
-            key={index}
+            key={message._id}
+            ref={index === arr.length - 1 ? lastMessageRef : null} // Attach the ref to the last message
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems:
-                message.sender._id === loggedUser?._id ? "flex-end" : "flex-start",
+                message.sender._id === loggedUser?._id
+                  ? "flex-end"
+                  : "flex-start",
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {message.sender._id === loggedUser?._id && (
-                <IconButton onClick={(event) => handleClick(event, message._id)}>
+                <IconButton
+                  onClick={(event) => handleClick(event, message._id)}
+                >
                   <MoreVert style={{ cursor: "pointer" }} />
                 </IconButton>
               )}
               <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
+                anchorEl={anchorEls[message._id]}
+                open={Boolean(anchorEls[message._id])}
+                onClose={() => handleClose(message._id)}
               >
                 <MenuItem
                   onClick={() => {
-                    handleClickDelete();
-                    handleClose();
+                    handleClickDelete(message._id);
+                    handleClose(message._id);
                   }}
                 >
                   Delete
@@ -188,8 +227,13 @@ const ChatRoom = ({ isMobile, showGroups }) => {
                 sx={{
                   padding: 1,
                   backgroundColor:
-                    message.sender._id === loggedUser?._id ? "#5BC0BE" : "#E2E8F0",
-                  color: message.sender._id === loggedUser?._id ? "black" : "#333333",
+                    message.sender._id === loggedUser?._id
+                      ? "#5BC0BE"
+                      : "#E2E8F0",
+                  color:
+                    message.sender._id === loggedUser?._id
+                      ? "black"
+                      : "#333333",
                   borderRadius: 2,
                   width: "fit-content",
                 }}
@@ -198,7 +242,7 @@ const ChatRoom = ({ isMobile, showGroups }) => {
               </Paper>
             </Box>
             <Typography variant="caption" color="textSecondary">
-              {"0"}
+              {dayjs(message.createdAt).format("hh:mm A")}
             </Typography>
           </Box>
         ))}
@@ -214,7 +258,7 @@ const ChatRoom = ({ isMobile, showGroups }) => {
   ) : (
     <Grid
       item
-      xs={isMobile ? 12 : 8} // Set to 12 to take the full width
+      xs={isMobile ? 12 : 8}
       sx={{
         display: "flex",
         flexDirection: "column",

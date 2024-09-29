@@ -24,6 +24,7 @@
     "@mui/styled-engine-sc": "^6.1.1",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.13",
     "joi": "^17.13.3",
     "jwt-decode": "^4.0.0",
     "ldrs": "^1.0.2",

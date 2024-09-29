@@ -5,12 +5,12 @@ export let MainContext = createContext("");
 export function MainContextProvider({ children }) {
   let [logged, setLogged] = useState(false);
   let [loading, setLoading] = useState(false);
+  let [sending, setSending] = useState(false);
   let [loggedUser, setLoggedUser] = useState({});
-  let [currentChatID, setCurrentChatID] = useState("");
-  let [friendsInfo, setfriendsInfo] = useState([]);
+  let [currentChat, setCurrentChat] = useState("");
+  let [friendsInfo, setFriendsInfo] = useState([]);
   const [chatList, setChatList] = useState([]);
   let [allMessage, setAllMessage] = useState({});
-  console.log(allMessage);
   // const checkLogin = () => {
   //   setLoading(true);
   //   GET("/api/users/profile")
@@ -47,16 +47,18 @@ export function MainContextProvider({ children }) {
         setLoggedUser,
         setLoading,
         loading,
+        sending,
+        setSending,
         setLogged,
         logOut,
         chatList,
         setChatList,
-        currentChatID,
-        setCurrentChatID,
+        currentChat,
+        setCurrentChat,
         allMessage,
         setAllMessage,
         friendsInfo,
-        setfriendsInfo,
+        setFriendsInfo,
       }}
     >
       {children}

@@ -1,6 +1,8 @@
 import { Box, TextField, IconButton } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import PropTypes from "prop-types"; // Import PropTypes for validation
+import { useContext } from "react";
+import { MainContext } from "../../../Contexts/MainContext";
 
 const MessageInput = ({ message, setMessage, onSend }) => {
   const handleKeyPress = (event) => {
@@ -9,7 +11,7 @@ const MessageInput = ({ message, setMessage, onSend }) => {
       onSend();
     }
   };
-
+  const { sending } = useContext(MainContext);
   return (
     <Box
       sx={{
@@ -26,10 +28,10 @@ const MessageInput = ({ message, setMessage, onSend }) => {
         variant="outlined"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress} // Add the onKeyPress handler
+        onKeyPress={!sending ? handleKeyPress : null} // Add the onKeyPress handler
         sx={{ backgroundColor: "#f3f4f6", borderRadius: 0 }}
       />
-      <IconButton onClick={onSend} disabled={!message.trim()}>
+      <IconButton onClick={!sending ? onSend : null} disabled={!message.trim()}>
         <Send sx={{ color: "#3A506B" }} />
       </IconButton>
     </Box>
