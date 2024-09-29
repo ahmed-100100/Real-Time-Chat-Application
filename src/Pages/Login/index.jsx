@@ -151,7 +151,7 @@ export default function Login() {
                 }}
               />
             </Grid>
-            <Grid size={12}>
+            {/* <Grid size={12}>
               <Box display="flex" justifyContent="space-between">
                 <Link to="/forgot-password">
                   <Typography variant="body2" color="#3A506B">
@@ -159,7 +159,7 @@ export default function Login() {
                   </Typography>
                 </Link>
               </Box>
-            </Grid>
+            </Grid> */}
             <Grid size={12}>
               {loading ? (
                 <Box
