@@ -19,6 +19,8 @@ import ChatMenu from "./ChatMenu";
 import dayjs from "dayjs";
 import { getNameInitials } from "../../../utils/helpers/getNameInitials";
 import { stringToColor } from "../../../utils/helpers/getColorFromString";
+import SmsFailedOutlinedIcon from "@mui/icons-material/SmsFailedOutlined";
+import { produce } from "immer";
 
 const ChatRoom = ({ isMobile, showGroups }) => {
   const [newMessage, setNewMessage] = useState("");
@@ -100,13 +102,14 @@ const ChatRoom = ({ isMobile, showGroups }) => {
             res.data.data,
           ],
         }));
-        setChatList((prev) => {
-          let newList = prev;
-          if (newList[newList.indexOf(currentChat)]) {
-            newList[newList.indexOf(currentChat)].lastMessage = res.data.data;
-            return newList;
-          }
-        });
+        setChatList(
+          produce((draft) => {
+            const thisChat = draft[
+              currentChat.isGroup ? "groupChats" : "chats"
+            ].find((chat) => chat._id == currentChat._id);
+            thisChat.lastMessage = res.data.data;
+          })
+        );
       })
       .catch((err) => {
         console.error("Error sending message:", err);
@@ -239,11 +242,11 @@ const ChatRoom = ({ isMobile, showGroups }) => {
                   padding: 1,
                   backgroundColor:
                     message.sender._id === loggedUser?._id
-                      ? "#5BC0BE"
+                      ? "#3A506B"
                       : "#E2E8F0",
                   color:
                     message.sender._id === loggedUser?._id
-                      ? "black"
+                      ? "white"
                       : "#333333",
                   borderRadius: 2,
                   width: "fit-content",
@@ -280,7 +283,10 @@ const ChatRoom = ({ isMobile, showGroups }) => {
         padding: 0,
       }}
     >
-      <p>No chat selected</p>
+      <>
+        <SmsFailedOutlinedIcon sx={{ color: "#505050" }} />
+        <p style={{ color: "#505050" }}>No chat selected</p>
+      </>
     </Grid>
   );
 };

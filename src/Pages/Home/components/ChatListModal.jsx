@@ -106,9 +106,9 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
       open={open}
       onClose={handleClose}
     >
-      <div
+      <Box
         ref={modalRef} // Attach the ref here, to the actual modal content
-        style={{
+        sx={{
           color: "white",
           backgroundColor: "#3A506B",
           padding: "20px",
@@ -263,7 +263,7 @@ const ChatListModal = ({ open, handleClose, showGroups }) => {
             </Button>
           </Box>
         )}
-      </div>
+      </Box>
     </Modal>
   );
 };

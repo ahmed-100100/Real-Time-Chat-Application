@@ -8,10 +8,11 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
-  TextField,
   Button,
   CircularProgress,
   Box,
+  Paper,
+  InputBase,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import ChatListModal from "./ChatListModal";
@@ -20,8 +21,11 @@ import { MainContext } from "../../../Contexts/MainContext";
 import dayjs from "dayjs";
 import { getNameInitials } from "../../../utils/helpers/getNameInitials";
 import { stringToColor } from "../../../utils/helpers/getColorFromString";
+import SearchIcon from "@mui/icons-material/Search";
+
 const ChatList = ({ showGroups, isMobile }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const {
     chatList,
     setChatList,
@@ -31,6 +35,7 @@ const ChatList = ({ showGroups, isMobile }) => {
     currentChat,
     loggedUser,
   } = useContext(MainContext);
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -40,7 +45,7 @@ const ChatList = ({ showGroups, isMobile }) => {
   };
 
   useEffect(() => {
-    if (chatList[showGroups ? "groupChats" : "chats"]) return;
+    if (chatList?.[showGroups ? "groupChats" : "chats"]?.length) return;
     const getChatList = async () => {
       setLoading(true);
       await GET(
@@ -55,10 +60,22 @@ const ChatList = ({ showGroups, isMobile }) => {
           }));
         })
         .finally(() => setLoading(false));
-    }; // Memoizing the function based on showGroups and setChatList
+    };
 
-    getChatList(); // Triggering only when getChatList changes
-  }, [chatList, setChatList, setLoading, showGroups]); // Adding getChatList as a dependency to prevent infinite calls
+    getChatList();
+  }, [chatList, setChatList, setLoading, showGroups]);
+
+  // Filter the chats based on the search query
+  const filteredChats = chatList?.[showGroups ? "groupChats" : "chats"]?.filter(
+    (chat) => {
+      const name = showGroups
+        ? chat.groupName
+        : chat.participants?.find(
+            (participant) => participant._id !== loggedUser._id
+          )?.name;
+      return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    }
+  );
 
   return (
     <Grid
@@ -71,16 +88,29 @@ const ChatList = ({ showGroups, isMobile }) => {
         position: "relative",
       }}
     >
-      <TextField
+      <Paper
+        component="form"
         fullWidth
-        placeholder="Search"
-        variant="outlined"
         sx={{
-          marginBottom: 2,
-          backgroundColor: "#ffffff",
-          borderRadius: 2,
+          p: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mb: "1rem",
         }}
-      />
+      >
+        <InputBase
+          fullWidth
+          placeholder="Search"
+          value={searchQuery} // Controlled input
+          onChange={(e) => setSearchQuery(e.target.value)} // Update the searchQuery state
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: 2,
+          }}
+        />
+        <SearchIcon sx={{ color: "#d6d6d6" }} />
+      </Paper>
 
       {loading ? (
         <Box
@@ -94,12 +124,11 @@ const ChatList = ({ showGroups, isMobile }) => {
       ) : (
         <>
           <Typography variant="h6" gutterBottom>
-            Groups
+            {showGroups ? "Groups" : "Chats"}
           </Typography>
           <List>
-            {Array.isArray(chatList?.[showGroups ? "groupChats" : "chats"]) &&
-            chatList?.[showGroups ? "groupChats" : "chats"]?.length != 0 ? (
-              chatList?.[showGroups ? "groupChats" : "chats"]?.map((chat) => {
+            {Array.isArray(filteredChats) && filteredChats.length > 0 ? (
+              filteredChats.map((chat) => {
                 const name = showGroups
                   ? chat.groupName
                   : chat.participants?.find(
@@ -139,20 +168,18 @@ const ChatList = ({ showGroups, isMobile }) => {
                 );
               })
             ) : (
-              <p>No chats Yet</p>
+              <p>No chats found</p>
             )}
           </List>
         </>
       )}
-
-      {/* Conditionally render different buttons */}
 
       <Button
         variant="contained"
         sx={{
           width: "50px", // Ensure width and height are equal
           height: "50px",
-          minWidth: "50px", // Prevent the button from shrinking
+          minWidth: "50px",
           minHeight: "50px",
           borderRadius: "50%", // Ensures it's round
           backgroundColor: "#3A506B",
@@ -174,7 +201,6 @@ const ChatList = ({ showGroups, isMobile }) => {
         <Add />
       </Button>
 
-      {/* Custom Modal component */}
       <ChatListModal
         open={openModal}
         handleClose={handleCloseModal}

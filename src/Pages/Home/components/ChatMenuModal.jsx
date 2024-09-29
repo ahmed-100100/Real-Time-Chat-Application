@@ -58,7 +58,10 @@ const ChatMenuModal = ({ open, handleClose, actionType }) => {
   }, [open, handleClickOutside]);
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+    >
       <div
         ref={modalRef}
         style={{
